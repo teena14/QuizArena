@@ -1,0 +1,107 @@
+// =============================================================================
+// QuizArena — Prisma Schema
+// =============================================================================
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ── Enums ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  TEACHER
+  STUDENT
+}
+
+// ── Models ───────────────────────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(STUDENT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  classCode    String?       @unique // Only for TEACHER
+  teachers     User[]        @relation("StudentTeacher")
+  students     User[]        @relation("StudentTeacher")
+  quizzes      Quiz[]        @relation("TeacherQuizzes")
+  attempts     QuizAttempt[]
+
+  @@map("users")
+}
+
+model Quiz {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  timeLimit   Int      @default(600) // seconds (default 10 min)
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  createdById String
+  createdBy   User         @relation("TeacherQuizzes", fields: [createdById], references: [id], onDelete: Cascade)
+  questions   Question[]
+  attempts    QuizAttempt[]
+
+  @@map("quizzes")
+}
+
+model Question {
+  id           String   @id @default(cuid())
+  text         String
+  options      String[] // Array of 4 option strings
+  correctIndex Int      // 0-3 index of the correct option
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  quizId  String
+  quiz    Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  answers Answer[]
+
+  @@map("questions")
+}
+
+model QuizAttempt {
+  id             String   @id @default(cuid())
+  score          Int      @default(0)  // number of correct answers
+  totalQuestions Int
+  timeTaken      Int      @default(0)  // seconds taken
+  completedAt    DateTime @default(now())
+
+  // Relations
+  quizId    String
+  quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  studentId String
+  student   User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  answers   Answer[]
+
+  @@unique([quizId, studentId]) // one attempt per student per quiz
+  @@map("quiz_attempts")
+}
+
+model Answer {
+  id            String @id @default(cuid())
+  selectedIndex Int    // -1 means skipped/unanswered
+
+  // Relations
+  attemptId  String
+  attempt    QuizAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId String
+  question   Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([attemptId, questionId])
+  @@map("answers")
+}
