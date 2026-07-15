@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "test": "echo \"No tests yet — see Roadmap in README\" && exit 0"
   },
   "dependencies": {
     "@google/genai": "^2.11.0",
