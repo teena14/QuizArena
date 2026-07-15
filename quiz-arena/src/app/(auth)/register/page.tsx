@@ -84,13 +84,12 @@ function RegisterContent() {
               key={r}
               type="button"
               onClick={() => setForm((f) => ({ ...f, role: r }))}
-              className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                form.role === r
+              className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${form.role === r
                   ? "gradient-brand text-white"
                   : "text-muted-foreground hover:text-foreground"
-              }`}
+                }`}
             >
-              {r === "STUDENT" ? "🎓 Student" : "📚 Teacher"}
+              {r === "STUDENT" ? " Student" : " Teacher"}
             </button>
           ))}
         </div>

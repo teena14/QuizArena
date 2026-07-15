@@ -2,7 +2,6 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { QuizActionsMenu } from "@/components/teacher/QuizActionsMenu";
-import { DeleteQuizButton } from "@/components/teacher/DeleteQuizButton";
 import { Inbox, ListChecks, Clock, Users } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -83,22 +82,6 @@ export default async function QuizzesPage() {
                 }`}>
                   {quiz.isPublished ? "● Published" : "○ Draft"}
                 </span>
-                {quiz.isPublished ? (
-                  <Link
-                    href={`/teacher/quizzes/${quiz.id}/results`}
-                    className="text-xs px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all"
-                  >
-                    Results
-                  </Link>
-                ) : (
-                  <DeleteQuizButton quizId={quiz.id} />
-                )}
-                <Link
-                  href={`/teacher/quizzes/${quiz.id}/edit`}
-                  className="text-xs px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all"
-                >
-                  Edit
-                </Link>
                 <QuizActionsMenu quizId={quiz.id} isPublished={quiz.isPublished} />
               </div>
             </div>

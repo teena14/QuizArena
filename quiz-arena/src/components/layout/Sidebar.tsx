@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
-import { Zap, Edit, BookOpen, GraduationCap, LayoutDashboard, CalendarClock } from "lucide-react";
+import { Zap, Edit, GraduationCap, LayoutDashboard, CalendarClock } from "lucide-react";
 
 interface NavItem {
   href: string;
@@ -55,14 +55,6 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
         </Link>
       </div>
 
-      {/* Role badge */}
-      {role === "TEACHER" && (
-        <div className="px-4 pt-4 pb-2">
-          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-violet-500/15 text-violet-400 border border-violet-500/25`}>
-            <BookOpen className="w-4 h-4 mr-1" /> TEACHER
-          </span>
-        </div>
-      )}
 
       {/* Nav */}
       <nav className="flex-1 flex flex-col">

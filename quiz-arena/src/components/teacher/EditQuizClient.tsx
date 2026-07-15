@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Sparkles, X } from "lucide-react";
@@ -33,6 +34,7 @@ interface QuestionDraft {
 export function EditQuizClient({ quiz }: { quiz: QuizData }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [form, setForm] = useState({
     title: quiz.title,
     description: quiz.description || "",
@@ -349,11 +351,66 @@ export function EditQuizClient({ quiz }: { quiz: QuizData }) {
         ))}
       </div>
 
+      {/* Delete Confirmation Modal */}
+      {typeof document !== "undefined" && showDeleteConfirm && createPortal(
+        <div
+          style={{ position: "fixed", inset: 0, zIndex: 999999 }}
+          className="flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowDeleteConfirm(false); }}
+        >
+          <div className="glass rounded-2xl border border-border shadow-2xl p-7 w-full max-w-sm mx-4 animate-fade-in">
+            <h3 className="text-lg font-semibold text-foreground mb-2">Delete Quiz</h3>
+            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+              This quiz and all its questions and student attempts will be permanently deleted. This action cannot be undone.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-5 py-2.5 rounded-full border border-border text-sm font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                disabled={loading}
+                onClick={async () => {
+                  setLoading(true);
+                  setShowDeleteConfirm(false);
+                  try {
+                    const res = await fetch(`/api/teacher/quizzes/${quiz.id}`, { method: "DELETE" });
+                    if (!res.ok) { toast.error("Failed to delete"); return; }
+                    toast.success("Quiz deleted");
+                    router.push("/teacher/quizzes");
+                    router.refresh();
+                  } catch {
+                    toast.error("Something went wrong");
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
+                className="px-5 py-2.5 rounded-full bg-rose-500 text-white text-sm font-semibold hover:bg-rose-600 transition-all disabled:opacity-50"
+              >
+                {loading ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
       {/* Actions */}
       <div className="flex items-center justify-between gap-4 pb-8">
-        <Link href="/teacher/quizzes" className="px-6 py-3 rounded-full border border-border text-muted-foreground text-sm font-medium hover:border-primary/40 hover:text-foreground transition-all">
-          Cancel
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link href="/teacher/quizzes" className="px-6 py-3 rounded-full border border-border text-muted-foreground text-sm font-medium hover:border-primary/40 hover:text-foreground transition-all">
+            Cancel
+          </Link>
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            disabled={loading}
+            className="px-6 py-3 rounded-full border border-rose-500/40 text-rose-400 text-sm font-medium hover:bg-rose-500/10 hover:border-rose-500/60 transition-all disabled:opacity-50"
+          >
+            Delete Quiz
+          </button>
+        </div>
         <div className="flex gap-3">
           <button onClick={() => handleSave(false)} disabled={loading} className="px-6 py-3 rounded-full border border-border text-foreground text-sm font-medium hover:border-primary/40 hover:bg-muted transition-all disabled:opacity-50">
             Save Draft
