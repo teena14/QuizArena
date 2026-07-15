@@ -10,7 +10,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 
   const quiz = await prisma.quiz.findUnique({
     where: { id, isPublished: true },
-    include: {
+    select: {
+      id: true, title: true, description: true, timeLimit: true,
       createdBy: { select: { name: true } },
       questions: {
         orderBy: { order: "asc" },

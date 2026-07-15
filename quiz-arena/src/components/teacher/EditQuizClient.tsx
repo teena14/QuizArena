@@ -134,7 +134,7 @@ export function EditQuizClient({ quiz }: { quiz: QuizData }) {
         return;
       }
       
-      const newQuestions = data.questions.map((q: any) => ({
+      const newQuestions = data.questions.map((q: { text: string; options: [string, string, string, string]; correctIndex: number }) => ({
         id: crypto.randomUUID(),
         text: q.text,
         options: q.options,
@@ -146,7 +146,7 @@ export function EditQuizClient({ quiz }: { quiz: QuizData }) {
       setShowAiConfig(false);
       setAiTopic("");
       setAiFile(null);
-    } catch (error) {
+    } catch {
       toast.error("An error occurred during generation");
     } finally {
       setAiLoading(false);

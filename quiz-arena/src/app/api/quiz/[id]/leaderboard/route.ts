@@ -9,7 +9,10 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     where: { quizId: id },
     orderBy: [{ score: "desc" }, { timeTaken: "asc" }],
     take: 10,
-    include: { student: { select: { name: true } } },
+    select: {
+      id: true, score: true, totalQuestions: true, timeTaken: true,
+      student: { select: { name: true } },
+    },
   });
 
   return NextResponse.json({ attempts });

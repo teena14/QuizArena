@@ -54,6 +54,9 @@ model Quiz {
   questions   Question[]
   attempts    QuizAttempt[]
 
+  @@index([createdById])
+  @@index([isPublished])
+  @@index([createdAt])
   @@map("quizzes")
 }
 
@@ -71,6 +74,7 @@ model Question {
   quiz    Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
   answers Answer[]
 
+  @@index([quizId])
   @@map("questions")
 }
 
@@ -89,6 +93,8 @@ model QuizAttempt {
   answers   Answer[]
 
   @@unique([quizId, studentId]) // one attempt per student per quiz
+  @@index([quizId])
+  @@index([studentId])
   @@map("quiz_attempts")
 }
 
@@ -103,5 +109,7 @@ model Answer {
   question   Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@unique([attemptId, questionId])
+  @@index([attemptId])
+  @@index([questionId])
   @@map("answers")
 }

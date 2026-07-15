@@ -14,7 +14,10 @@ export default async function QuizzesPage() {
   const quizzes = await prisma.quiz.findMany({
     where: { createdById: userId },
     orderBy: { createdAt: "desc" },
-    include: { _count: { select: { questions: true, attempts: true } } },
+    select: {
+      id: true, title: true, description: true, timeLimit: true, isPublished: true, createdAt: true,
+      _count: { select: { questions: true, attempts: true } }
+    },
   });
 
   return (

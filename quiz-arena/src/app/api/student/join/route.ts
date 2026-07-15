@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { joinClassSchema } from "@/lib/validations";
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,16 +10,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { classCode } = await req.json();
-    if (!classCode) {
-      return NextResponse.json({ error: "Class code is required" }, { status: 400 });
+    const parsed = joinClassSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
     }
+    const { classCode } = parsed.data;
 
     const studentId = (session.user as { id: string }).id;
 
-    // Find the teacher with this class code
     const teacher = await prisma.user.findUnique({
-      where: { classCode: classCode.toUpperCase() },
+      where: { classCode },
+      select: { id: true, name: true, role: true },
     });
 
     if (!teacher || teacher.role !== "TEACHER") {
@@ -36,8 +38,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ success: true, teacherName: teacher.name });
-  } catch (error: any) {
-    console.error("Join Class Error:", error);
+  } catch {
     return NextResponse.json(
       { error: "Failed to join class" },
       { status: 500 }

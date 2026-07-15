@@ -20,12 +20,13 @@ export default async function StudentDashboard() {
       }
     },
     orderBy: { createdAt: "desc" },
-    include: {
+    select: {
+      id: true, title: true, description: true, timeLimit: true, createdAt: true,
       createdBy: { select: { id: true, name: true } },
       _count: { select: { questions: true } },
       attempts: {
         where: { studentId: userId },
-        select: { score: true, totalQuestions: true, timeTaken: true },
+        select: { id: true, score: true, totalQuestions: true, timeTaken: true },
         take: 1,
       },
     },

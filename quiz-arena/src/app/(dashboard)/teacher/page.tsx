@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import crypto from "crypto";
 import Link from "next/link";
 import { FileText, CheckCircle2, Target } from "lucide-react";
 import type { Metadata } from "next";
@@ -12,7 +13,7 @@ export default async function TeacherDashboard() {
 
   let teacher = await prisma.user.findUnique({ where: { id: userId } });
   if (!teacher?.classCode) {
-    const newCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const newCode = crypto.randomBytes(3).toString("hex").toUpperCase();
     teacher = await prisma.user.update({
       where: { id: userId },
       data: { classCode: newCode },
@@ -27,7 +28,10 @@ export default async function TeacherDashboard() {
       where: { createdById: userId },
       orderBy: { createdAt: "desc" },
       take: 5,
-      include: { _count: { select: { questions: true, attempts: true } } },
+      select: {
+        id: true, title: true, timeLimit: true, isPublished: true,
+        _count: { select: { questions: true, attempts: true } }
+      }
     }),
   ]);
 

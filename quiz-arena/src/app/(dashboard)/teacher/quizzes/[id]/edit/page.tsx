@@ -13,7 +13,13 @@ export default async function EditQuizPage({ params }: { params: Promise<{ id: s
 
   const quiz = await prisma.quiz.findUnique({
     where: { id, createdById: userId },
-    include: { questions: { orderBy: { order: "asc" } } },
+    select: {
+      id: true, title: true, description: true, timeLimit: true, isPublished: true,
+      questions: {
+        orderBy: { order: "asc" },
+        select: { id: true, text: true, options: true, correctIndex: true, order: true }
+      }
+    },
   });
 
   if (!quiz) notFound();

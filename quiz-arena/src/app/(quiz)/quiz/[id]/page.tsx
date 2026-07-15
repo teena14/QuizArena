@@ -14,7 +14,11 @@ export default async function QuizLobbyPage({ params }: { params: Promise<{ id: 
 
   const quiz = await prisma.quiz.findUnique({
     where: { id, isPublished: true },
-    include: {
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      timeLimit: true,
       createdBy: { select: { name: true } },
       _count: { select: { questions: true } },
     },

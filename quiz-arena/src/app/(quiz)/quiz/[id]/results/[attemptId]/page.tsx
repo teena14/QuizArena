@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { getScoreColor, getScoreGrade } from "@/lib/utils";
 
 interface Answer {
@@ -72,7 +73,6 @@ export default function ResultsPage() {
   const mins = Math.floor(result.timeTaken / 60);
   const secs = result.timeTaken % 60;
   const optionLabels = ["A", "B", "C", "D"];
-  const medals = ["🥇", "🥈", "🥉"];
 
   const correct = result.answers.filter((a) => a.selectedIndex === a.question.correctIndex).length;
   const wrong = result.answers.filter((a) => a.selectedIndex !== -1 && a.selectedIndex !== a.question.correctIndex).length;
@@ -88,8 +88,11 @@ export default function ResultsPage() {
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 py-12 space-y-8">
         {/* Score Card */}
-        <div className="glass rounded-3xl p-8 text-center animate-fade-in">
-          <h1 className="text-2xl font-bold text-foreground mb-2">{result.quiz.title}</h1>
+        <div className="glass rounded-3xl p-8 text-center animate-fade-in relative">
+          <Link href="/student" className="absolute top-6 left-6 flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <ArrowLeft className="w-4 h-4" /> Back to Dashboard
+          </Link>
+          <h1 className="text-2xl font-bold text-foreground mb-2 mt-2">{result.quiz.title}</h1>
           <p className="text-muted-foreground text-sm mb-8">Quiz Complete!</p>
 
           {/* Circular Score */}
@@ -143,7 +146,7 @@ export default function ResultsPage() {
                 tab === t ? "gradient-brand text-white" : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {t === "breakdown" ? "📋 Answer Breakdown" : "🏆 Leaderboard"}
+              {t === "breakdown" ? "Answer Breakdown" : "Leaderboard"}
             </button>
           ))}
         </div>
@@ -220,7 +223,7 @@ export default function ResultsPage() {
                   const initials = entry.student.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
                   return (
                     <tr key={entry.id} className={`border-b border-border last:border-0 ${i === 0 ? "bg-yellow-500/5" : i === 1 ? "bg-slate-500/5" : i === 2 ? "bg-orange-500/5" : ""} hover:bg-muted/30 transition-colors`}>
-                      <td className="px-6 py-4 text-lg">{medals[i] ?? `#${i + 1}`}</td>
+                      <td className="px-6 py-4 text-lg">#{i + 1}</td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           <div className="w-8 h-8 rounded-full gradient-brand flex items-center justify-center text-white font-bold text-xs">{initials}</div>
@@ -240,12 +243,6 @@ export default function ResultsPage() {
           </div>
         )}
 
-        {/* Back Button */}
-        <div className="text-center pb-8">
-          <Link href="/student" className="inline-block px-8 py-3 rounded-xl gradient-brand text-white font-semibold hover:opacity-90 transition-all duration-200">
-            ← Back to Dashboard
-          </Link>
-        </div>
       </div>
     </div>
   );

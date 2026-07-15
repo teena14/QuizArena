@@ -29,13 +29,17 @@ export default function TakeQuizPage({ params }: { params: Promise<{ id: string 
   const [timeLeft, setTimeLeft] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const startTime = useRef(Date.now());
+  const startTime = useRef<number>(0);
   const submitted = useRef(false);
 
   // Resolve params
   useEffect(() => {
     params.then(({ id }) => setQuizId(id));
   }, [params]);
+
+  useEffect(() => {
+    if (startTime.current === 0) startTime.current = Date.now();
+  }, []);
 
   // Fetch quiz
   useEffect(() => {
@@ -72,8 +76,8 @@ export default function TakeQuizPage({ params }: { params: Promise<{ id: string 
       }
       if (!res.ok) { toast.error(data.error || "Submission failed"); submitted.current = false; setSubmitting(false); return; }
 
-      if (auto) toast.warning("⏰ Time's up! Quiz auto-submitted.");
-      else toast.success("✅ Quiz submitted!");
+      if (auto) toast.warning("Time's up! Quiz auto-submitted.");
+      else toast.success("Quiz submitted!");
 
       router.push(`/quiz/${quiz.id}/results/${data.attemptId}`);
     } catch {
@@ -86,10 +90,17 @@ export default function TakeQuizPage({ params }: { params: Promise<{ id: string 
   // Countdown timer
   useEffect(() => {
     if (!quiz || loading) return;
-    if (timeLeft <= 0) { handleSubmit(true); return; }
+    if (timeLeft <= 0) {
+      setTimeout(() => handleSubmit(true), 0);
+      return;
+    }
     const interval = setInterval(() => {
       setTimeLeft((t) => {
-        if (t <= 1) { clearInterval(interval); handleSubmit(true); return 0; }
+        if (t <= 1) {
+          clearInterval(interval);
+          setTimeout(() => handleSubmit(true), 0);
+          return 0;
+        }
         return t - 1;
       });
     }, 1000);
@@ -136,7 +147,6 @@ export default function TakeQuizPage({ params }: { params: Promise<{ id: string 
               ? "bg-amber-500/20 text-amber-400 border border-amber-500/40"
               : "bg-muted text-foreground border border-border"
           }`}>
-            <span>{isUrgent ? "🔴" : isWarning ? "🟡" : "⏱"}</span>
             {formatTime(timeLeft)}
           </div>
 
@@ -268,14 +278,13 @@ export default function TakeQuizPage({ params }: { params: Promise<{ id: string 
       {showConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div className="glass rounded-2xl p-8 max-w-sm w-full mx-4 animate-fade-in text-center">
-            <div className="text-4xl mb-4">🏁</div>
             <h3 className="text-xl font-bold text-foreground mb-2">Submit Quiz?</h3>
             <p className="text-muted-foreground text-sm mb-2">
               You&apos;ve answered <span className="text-foreground font-semibold">{answered}</span> of <span className="text-foreground font-semibold">{total}</span> questions.
             </p>
             {answered < total && (
               <p className="text-amber-400 text-xs mb-4">
-                ⚠️ {total - answered} unanswered question{total - answered !== 1 ? "s" : ""} will count as wrong.
+                {total - answered} unanswered question{total - answered !== 1 ? "s" : ""} will count as wrong.
               </p>
             )}
             <div className="flex gap-3 mt-6">

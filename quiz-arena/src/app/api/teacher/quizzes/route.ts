@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { updateQuizSchema } from "@/lib/validations";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET /api/teacher/quizzes — list teacher's quizzes
@@ -11,7 +12,10 @@ export async function GET() {
   const quizzes = await prisma.quiz.findMany({
     where: { createdById: userId },
     orderBy: { createdAt: "desc" },
-    include: { _count: { select: { questions: true, attempts: true } } },
+    select: {
+      id: true, title: true, description: true, timeLimit: true, isPublished: true, createdAt: true, updatedAt: true,
+      _count: { select: { questions: true, attempts: true } }
+    },
   });
   return NextResponse.json({ quizzes });
 }
@@ -23,7 +27,9 @@ export async function POST(req: NextRequest) {
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const { title, description, timeLimit, isPublished, questions } = await req.json();
+    const parsed = updateQuizSchema.safeParse(await req.json());
+    if (!parsed.success) return NextResponse.json({ error: "Invalid data" }, { status: 400 });
+    const { title, description, timeLimit, isPublished, questions } = parsed.data;
     if (!title?.trim()) return NextResponse.json({ error: "Title is required" }, { status: 400 });
 
     const quiz = await prisma.quiz.create({
@@ -34,7 +40,7 @@ export async function POST(req: NextRequest) {
         isPublished: isPublished ?? false,
         createdById: userId,
         questions: {
-          create: (questions || []).map((q: { text: string; options: string[]; correctIndex: number; order: number }) => ({
+          create: questions.map((q) => ({
             text: q.text,
             options: q.options,
             correctIndex: q.correctIndex,
@@ -42,12 +48,15 @@ export async function POST(req: NextRequest) {
           })),
         },
       },
-      include: { questions: true, _count: { select: { questions: true } } },
+      select: {
+        id: true, title: true, description: true, timeLimit: true, isPublished: true, createdAt: true, updatedAt: true,
+        questions: { select: { id: true, text: true, options: true, correctIndex: true, order: true } },
+        _count: { select: { questions: true } }
+      },
     });
 
     return NextResponse.json({ quiz }, { status: 201 });
-  } catch (err) {
-    console.error("[POST /api/teacher/quizzes]", err);
+  } catch {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

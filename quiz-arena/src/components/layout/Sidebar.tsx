@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
-import { Zap, Edit, Search, BookOpen, GraduationCap, LayoutDashboard, CalendarClock, History } from "lucide-react";
+import { Zap, Edit, BookOpen, GraduationCap, LayoutDashboard, CalendarClock } from "lucide-react";
 
 interface NavItem {
   href: string;
@@ -25,8 +25,8 @@ const teacherNav: NavItem[] = [
 
 const studentNav: NavItem[] = [
   { href: "/student", label: "Dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
+  { href: "/student/classrooms", label: "Classrooms", icon: <GraduationCap className="w-5 h-5" /> },
   { href: "/student/upcoming", label: "Upcoming", icon: <CalendarClock className="w-5 h-5" /> },
-  { href: "/student/history", label: "History", icon: <History className="w-5 h-5" /> },
 ];
 
 export function Sidebar({ role, userName, userEmail }: SidebarProps) {

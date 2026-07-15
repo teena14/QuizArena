@@ -14,10 +14,12 @@ export async function GET(
 
   const attempt = await prisma.quizAttempt.findUnique({
     where: { id: attemptId, studentId: userId, quizId: id },
-    include: {
+    select: {
+      id: true, score: true, totalQuestions: true, timeTaken: true, completedAt: true,
       quiz: { select: { title: true, timeLimit: true } },
       answers: {
-        include: {
+        select: {
+          id: true, selectedIndex: true,
           question: { select: { text: true, options: true, correctIndex: true, order: true } },
         },
         orderBy: { question: { order: "asc" } },

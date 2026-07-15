@@ -13,11 +13,16 @@ export default async function QuizResultsPage({ params }: { params: Promise<{ id
 
   const quiz = await prisma.quiz.findUnique({
     where: { id, createdById: userId },
-    include: {
+    select: {
+      title: true,
+      timeLimit: true,
       _count: { select: { questions: true } },
       attempts: {
         orderBy: [{ score: "desc" }, { timeTaken: "asc" }],
-        include: { student: { select: { name: true, email: true } } },
+        select: {
+          id: true, score: true, totalQuestions: true, timeTaken: true, completedAt: true,
+          student: { select: { name: true, email: true } },
+        },
       },
     },
   });

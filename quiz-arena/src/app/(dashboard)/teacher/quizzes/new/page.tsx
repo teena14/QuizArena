@@ -52,7 +52,7 @@ export default function NewQuizPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to generate");
 
-      const generated = data.questions.map((q: any) => ({
+      const generated = data.questions.map((q: { text: string; options: [string, string, string, string]; correctIndex: number }) => ({
         id: crypto.randomUUID(),
         text: q.text,
         options: q.options,
@@ -70,8 +70,8 @@ export default function NewQuizPage() {
       setShowAI(false);
       setAiTopic("");
       setAiFile(null);
-    } catch (err: any) {
-      toast.error(err.message || "Failed to generate questions");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to generate questions");
     } finally {
       setAiLoading(false);
     }

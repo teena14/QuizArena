@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Either a topic or a file is required" }, { status: 400 });
     }
 
-    const contents: any[] = [];
+    const contents: { inlineData: { data: string; mimeType: string } }[] = [];
     let prompt = `Generate exactly ${count} multiple choice questions. `;
 
     if (file) {
@@ -92,10 +92,10 @@ Return the output as a JSON array matching the required schema.
 
     return NextResponse.json({ questions });
 
-  } catch (error: any) {
-    console.error("AI Generation Error:", error);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Failed to generate questions";
     return NextResponse.json(
-      { error: error.message || "Failed to generate questions" },
+      { error: message },
       { status: 500 }
     );
   }

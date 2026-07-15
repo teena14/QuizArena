@@ -17,12 +17,13 @@ export default async function StudentDashboard() {
       }
     },
     orderBy: { createdAt: "desc" },
-    include: {
+    select: {
+      id: true, title: true, description: true, timeLimit: true, createdAt: true,
       createdBy: { select: { id: true, name: true } },
       _count: { select: { questions: true } },
       attempts: {
         where: { studentId: userId },
-        select: { score: true, totalQuestions: true, timeTaken: true },
+        select: { id: true, score: true, totalQuestions: true, timeTaken: true },
         take: 1,
       },
     },
@@ -31,7 +32,7 @@ export default async function StudentDashboard() {
   return (
     <div className="p-8 space-y-8">
       {/* Quiz History View */}
-      <div className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
+      <div>
         <StudentView quizzes={quizzes} view="history" />
       </div>
     </div>

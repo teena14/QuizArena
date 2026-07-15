@@ -1,6 +1,7 @@
 // POST /api/quiz/[id]/submit — server-side auto-grading
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { submitQuizSchema } from "@/lib/validations";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -15,10 +16,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   });
   if (existing) return NextResponse.json({ error: "Already attempted", attemptId: existing.id }, { status: 409 });
 
-  const { answers, timeTaken } = await req.json() as {
-    answers: Record<string, number>; // { questionId: selectedIndex }
-    timeTaken: number;
-  };
+  const parsed = submitQuizSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid payload format" }, { status: 400 });
+  }
+  const { answers, timeTaken } = parsed.data;
 
   // Fetch questions with correct answers (server-side only)
   const questions = await prisma.question.findMany({
@@ -30,7 +32,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   // Grade answers
   let score = 0;
-  const answerRecords = questions.map((q: { id: string; correctIndex: number }) => {
+  const answerRecords = questions.map((q) => {
     const selected = answers[q.id] ?? -1; // -1 = unanswered
     if (selected === q.correctIndex) score++;
     return { questionId: q.id, selectedIndex: selected };
