@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { toast } from "sonner";
 
-export default function RegisterPage() {
+function RegisterContent() {
   const router = useRouter();
   const params = useSearchParams();
   const defaultRole = params.get("role") === "TEACHER" ? "TEACHER" : "STUDENT";
@@ -162,5 +162,13 @@ export default function RegisterPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center text-muted-foreground">Loading...</div>}>
+      <RegisterContent />
+    </Suspense>
   );
 }
