@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/layout/Sidebar";
+
+export const metadata: Metadata = {
+  title: "Student Dashboard",
+  robots: { index: false, follow: false },
+};
 
 export default async function StudentLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
