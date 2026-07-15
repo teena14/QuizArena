@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { Users, ClipboardList, BarChart, Timer, Trophy, Inbox, Medal } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Quiz Results" };
@@ -34,7 +35,11 @@ export default async function QuizResultsPage({ params }: { params: Promise<{ id
     ? Math.round(quiz.attempts.reduce((s: number, a: AttemptWithStudent) => s + (a.score / a.totalQuestions) * 100, 0) / quiz.attempts.length)
     : 0;
 
-  const medals = ["🥇", "🥈", "🥉"];
+  const medals = [
+    <Medal key="1" className="w-5 h-5 text-yellow-500" />,
+    <Medal key="2" className="w-5 h-5 text-slate-400" />,
+    <Medal key="3" className="w-5 h-5 text-orange-600" />
+  ];
 
   return (
     <div className="p-8 max-w-5xl mx-auto space-y-8">
@@ -50,13 +55,13 @@ export default async function QuizResultsPage({ params }: { params: Promise<{ id
       {/* Summary Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-fade-in" style={{ animationDelay: "0.1s" }}>
         {[
-          { label: "Total Attempts", value: quiz.attempts.length, icon: "👥" },
-          { label: "Questions", value: quiz._count.questions, icon: "📋" },
-          { label: "Avg Score", value: `${avgScore}%`, icon: "📊" },
-          { label: "Time Limit", value: `${Math.floor(quiz.timeLimit / 60)}m`, icon: "⏱" },
+          { label: "Total Attempts", value: quiz.attempts.length, icon: <Users className="w-6 h-6" /> },
+          { label: "Questions", value: quiz._count.questions, icon: <ClipboardList className="w-6 h-6" /> },
+          { label: "Avg Score", value: `${avgScore}%`, icon: <BarChart className="w-6 h-6" /> },
+          { label: "Time Limit", value: `${Math.floor(quiz.timeLimit / 60)}m`, icon: <Timer className="w-6 h-6" /> },
         ].map((s) => (
-          <div key={s.label} className="glass rounded-xl p-5 text-center">
-            <div className="text-2xl mb-1">{s.icon}</div>
+          <div key={s.label} className="glass rounded-xl p-5 text-center flex flex-col items-center">
+            <div className="mb-2 text-muted-foreground">{s.icon}</div>
             <div className="text-2xl font-extrabold text-foreground">{s.value}</div>
             <div className="text-xs text-muted-foreground mt-0.5">{s.label}</div>
           </div>
@@ -65,11 +70,13 @@ export default async function QuizResultsPage({ params }: { params: Promise<{ id
 
       {/* Leaderboard Table */}
       <div className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
-        <h2 className="text-xl font-semibold text-foreground mb-4">🏆 Leaderboard</h2>
+        <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+          <Trophy className="w-5 h-5 text-yellow-500" /> Leaderboard
+        </h2>
 
         {quiz.attempts.length === 0 ? (
-          <div className="glass rounded-2xl p-12 text-center">
-            <div className="text-5xl mb-4">📭</div>
+          <div className="glass rounded-2xl p-12 text-center flex flex-col items-center">
+            <Inbox className="w-12 h-12 text-muted-foreground mb-4" />
             <p className="text-lg font-semibold text-foreground mb-2">No attempts yet</p>
             <p className="text-muted-foreground text-sm">Share the quiz link with your students to start.</p>
           </div>
@@ -100,7 +107,9 @@ export default async function QuizResultsPage({ params }: { params: Promise<{ id
                       } hover:bg-muted/30`}
                     >
                       <td className="px-6 py-4">
-                        <span className="text-lg">{medals[i] ?? `#${i + 1}`}</span>
+                        <div className="flex items-center text-lg font-semibold text-muted-foreground">
+                          {medals[i] ?? `#${i + 1}`}
+                        </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
