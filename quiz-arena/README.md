@@ -1,122 +1,170 @@
-# QuizArena 🏆
+# QuizArena
 
-A full-stack, multi-role quiz platform built with Next.js 16, Prisma v7, Supabase, and NextAuth v5.
+> A timed, multi-role quiz platform where teachers build MCQ quizzes and students compete on a live leaderboard — built with Next.js 16 and Supabase.
+
+![Hero screenshot](docs/screenshots/hero.png)
+
+[![CI](https://github.com/your-username/quiz-arena/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/quiz-arena/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
+**Live demo → [https://quizarena-gpr1.onrender.com](https://quizarena-gpr1.onrender.com)**
+
+---
 
 ## Features
 
-- **Role-based access** — Teacher and Student accounts
-- **Quiz Builder** — Teachers create MCQ quizzes with dynamic question editor
-- **Timed Quizzes** — Countdown timer with auto-submit on expiry
-- **Server-side Grading** — Correct answers never sent to the client
-- **Per-Quiz Leaderboard** — Ranked by score then time
-- **Results Breakdown** — Correct/wrong/skipped per question with answer reveal
-- **One attempt per student** — Enforced by unique constraint in the DB
+- 🏫 **Role-based accounts** — separate Teacher and Student dashboards, enforced at the Edge
+- 📝 **Quiz Builder** — teachers create, edit, publish, and delete MCQ quizzes with a dynamic question editor
+- ⏱️ **Timed quizzes** — countdown timer auto-submits when time runs out
+- 🔒 **Server-side grading** — `correctIndex` is never sent to the browser; cheating is structurally impossible
+- 🏆 **Live leaderboard** — students ranked by score, then by time taken
+- 📊 **Results breakdown** — per-question correct / wrong / skipped reveal after submission
+- 🚫 **One attempt per student** — enforced by a unique DB constraint, not just application logic
+
+---
 
 ## Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
+|---|---|
 | Framework | Next.js 16 (App Router, TypeScript) |
 | Styling | Tailwind CSS v4 (CSS-first, OKLCH colors) |
 | Database | Supabase (PostgreSQL) |
 | ORM | Prisma v7 with `@prisma/adapter-pg` |
-| Auth | NextAuth v5 (Credentials + bcryptjs) |
-| UI | shadcn/ui compatible components |
-| Toasts | Sonner |
+| Auth | NextAuth v5 — Credentials + bcryptjs |
+| Icons / Toasts | lucide-react · Sonner |
+| Deployment | Render |
 
-## Setup
+---
 
-### 1. Prerequisites
-
-- Node.js 18+
-- A Supabase project (free tier works)
-
-### 2. Clone & Install
+## Quick Start
 
 ```bash
-git clone <repo>
+git clone https://github.com/your-username/quiz-arena.git
 cd quiz-arena
+
+cp .env.example .env.local   # fill in your Supabase + NextAuth values
+
 npm install
-```
-
-### 3. Environment Variables
-
-Copy `.env.example` to `.env.local` and fill in:
-
-```bash
-cp .env.example .env.local
-```
-
-Get both DB URLs from: **Supabase Dashboard → Project Settings → Database → Connection String → ORM tab**
-
-### 4. Generate Prisma Client & Push Schema
-
-```bash
 npx prisma generate
-npx prisma db push
+npx prisma db push           # creates all tables in your Supabase DB
+
+npm run dev                  # http://localhost:3000
 ```
 
-> `db push` creates all tables in your Supabase database directly.
+> **Prerequisites:** Node.js 18+ and a free [Supabase](https://supabase.com) project.
 
-### 5. Run Development Server
+---
+
+## Environment Variables
+
+Copy `.env.example` → `.env.local` and fill in:
+
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | Supabase Transaction Pooler connection string (port **6543**, `?pgbouncer=true`) — used at runtime |
+| `DIRECT_URL` | Supabase Direct connection string (port **5432**) — used by Prisma CLI for `db push` |
+| `NEXTAUTH_SECRET` | Random secret for signing JWT sessions — generate with `openssl rand -base64 32` |
+| `NEXTAUTH_URL` | Base URL of your app (`http://localhost:3000` in dev, your Render URL in production) |
+
+Both DB URLs are found at: **Supabase Dashboard → Project Settings → Database → Connection String → ORM tab**.
+
+---
+
+## Architecture
+
+QuizArena uses React Server Components for data fetching, Next.js middleware for Edge-based route protection, and a server-side grading flow that never exposes correct answers to the client.
+
+→ **Full details, Mermaid diagrams, and API reference:** [`docs/architecture.md`](docs/architecture.md)
+
+→ **Hard decisions & trade-offs:** [`docs/case-study.md`](docs/case-study.md)
+
+---
+
+## Testing
 
 ```bash
-npm run dev
+npm run typecheck   # TypeScript — zero errors required
+npm run lint        # ESLint + Next.js rules
+npm run build       # production build smoke-test
 ```
+
+> Unit and E2E tests are on the [roadmap](#roadmap).
+
+---
 
 ## Project Structure
 
 ```
-src/
-├── app/
-│   ├── (auth)/              # Login & Register pages
-│   ├── (dashboard)/
-│   │   ├── teacher/         # Teacher dashboard, quiz CRUD
-│   │   └── student/         # Student quiz browser
-│   ├── (quiz)/
-│   │   └── quiz/[id]/       # Lobby, Take, Results pages
-│   └── api/
-│       ├── auth/            # NextAuth handler
-│       ├── register/        # User registration
-│       ├── teacher/quizzes/ # Teacher CRUD APIs
-│       └── quiz/[id]/       # Public quiz, submit, leaderboard
-├── components/
-│   ├── layout/              # Sidebar
-│   └── teacher/             # EditQuizClient, QuizActionsMenu
-├── lib/
-│   ├── prisma.ts            # Prisma client (with PrismaPg adapter)
-│   ├── auth.config.ts       # NextAuth credentials config
-│   └── utils.ts             # cn(), formatTime(), score helpers
-├── auth.ts                  # NextAuth exports
-├── middleware.ts             # Route protection + role guards
-└── types/next-auth.d.ts     # Session type augmentation
-prisma/
-└── schema.prisma            # DB schema
-prisma.config.ts             # Prisma v7 CLI config
+quiz-arena/
+├── .github/
+│   ├── workflows/ci.yml          # lint + typecheck + build on every push
+│   ├── ISSUE_TEMPLATE/           # bug_report.md, feature_request.md
+│   └── PULL_REQUEST_TEMPLATE.md
+├── docs/
+│   ├── architecture.md           # ER diagram, auth flow, API reference
+│   └── screenshots/
+├── prisma/
+│   └── schema.prisma             # DB schema (5 models)
+├── public/
+├── src/
+│   ├── app/                      # App Router routes
+│   │   ├── (auth)/               # /login  /register
+│   │   ├── (dashboard)/          # /teacher  /student
+│   │   ├── (quiz)/               # /quiz/[id]  lobby → take → results
+│   │   └── api/                  # REST handlers
+│   ├── components/
+│   │   ├── layout/               # Sidebar
+│   │   └── teacher/              # EditQuizClient, QuizActionsMenu
+│   ├── lib/                      # prisma.ts, auth.config.ts, utils.ts, validations.ts
+│   ├── types/                    # next-auth.d.ts
+│   ├── auth.ts                   # full NextAuth init (Node runtime)
+│   └── proxy.ts                  # Edge-safe NextAuth re-export
+├── tests/                        # unit + e2e (planned)
+├── .env.example                  # every variable with safe dummy values
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+└── LICENSE
 ```
+
+---
+
+## Roadmap
+
+- [x] Role-based auth (Teacher / Student)
+- [x] Quiz Builder with dynamic question editor
+- [x] Timed quiz engine with auto-submit
+- [x] Server-side grading (correctIndex never leaves the server)
+- [x] Per-quiz leaderboard
+- [x] Results breakdown with answer reveal
+- [ ] Class-code system — students join a teacher's class
+- [ ] Question bank — reuse questions across multiple quizzes
+- [ ] Rich text / image support in questions
+- [ ] CSV export of results
+- [ ] AI-generated question suggestions
+
+---
+
+## Screenshots
+
+_Add screenshots to `docs/screenshots/` — the `hero.png` is shown at the top._
+
+---
 
 ## User Flows
 
-### Teacher
-1. Register with role **Teacher** → redirected to `/teacher`
-2. Create a quiz: title, description, time limit, questions with 4 options
-3. Publish quiz → students can now see it
-4. View results → per-student scores on the leaderboard
+**Teacher:** Register → Create quiz (title + questions) → Publish → View per-student leaderboard
 
-### Student
-1. Register with role **Student** → redirected to `/student`
-2. Browse published quizzes → click **Start Quiz**
-3. Read rules on the lobby page → click **Start Quiz**
-4. Answer MCQ questions with countdown timer
-5. Submit manually or timer auto-submits
-6. View score, answer breakdown, and class leaderboard
+**Student:** Register → Browse published quizzes → Lobby → Timed MCQ → Submit → Score + breakdown
 
-## Deployment
+---
 
-Deploy to Vercel:
+## Contributing
 
-```bash
-vercel --prod
-```
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for branch naming, commit style, and the PR process.
 
-Set all env vars in Vercel Dashboard → Settings → Environment Variables.
+---
+
+## License
+
+MIT — see [LICENSE](./LICENSE).
