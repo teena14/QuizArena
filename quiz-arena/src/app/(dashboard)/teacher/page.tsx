@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
 import Link from "next/link";
 import { FileText, CheckCircle2, Target } from "lucide-react";
+import { DeleteQuizButton } from "@/components/teacher/DeleteQuizButton";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Teacher Dashboard" };
@@ -20,10 +21,10 @@ export default async function TeacherDashboard() {
     });
   }
 
-  const [totalQuizzes, publishedQuizzes, totalAttempts, recentQuizzes] = await Promise.all([
+  const [totalQuizzes, publishedQuizzes, draftQuizzes, recentQuizzes] = await Promise.all([
     prisma.quiz.count({ where: { createdById: userId } }),
     prisma.quiz.count({ where: { createdById: userId, isPublished: true } }),
-    prisma.quizAttempt.count({ where: { quiz: { createdById: userId } } }),
+    prisma.quiz.count({ where: { createdById: userId, isPublished: false } }),
     prisma.quiz.findMany({
       where: { createdById: userId },
       orderBy: { createdAt: "desc" },
@@ -38,7 +39,7 @@ export default async function TeacherDashboard() {
   const stats = [
     { label: "Total Quizzes", value: totalQuizzes, icon: <FileText className="w-8 h-8" />, color: "from-violet-500/20 to-violet-500/5 border-violet-500/30" },
     { label: "Published", value: publishedQuizzes, icon: <CheckCircle2 className="w-8 h-8" />, color: "from-emerald-500/20 to-emerald-500/5 border-emerald-500/30" },
-    { label: "Total Attempts", value: totalAttempts, icon: <Target className="w-8 h-8" />, color: "from-sky-500/20 to-sky-500/5 border-sky-500/30" },
+    { label: "Drafts", value: draftQuizzes, icon: <FileText className="w-8 h-8 opacity-70" />, color: "from-sky-500/20 to-sky-500/5 border-sky-500/30" },
   ];
 
   return (
@@ -131,12 +132,16 @@ export default async function TeacherDashboard() {
                   >
                     Edit
                   </Link>
-                  <Link
-                    href={`/teacher/quizzes/${quiz.id}/results`}
-                    className="text-xs px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all"
-                  >
-                    Results
-                  </Link>
+                  {quiz.isPublished ? (
+                    <Link
+                      href={`/teacher/quizzes/${quiz.id}/results`}
+                      className="text-xs px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all"
+                    >
+                      Results
+                    </Link>
+                  ) : (
+                    <DeleteQuizButton quizId={quiz.id} />
+                  )}
                 </div>
               </div>
             ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -13,6 +13,19 @@ export function QuizActionsMenu({ quizId, isPublished }: QuizActionsMenuProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
 
   async function handlePublishToggle() {
     setLoading(true);
@@ -47,7 +60,7 @@ export function QuizActionsMenu({ quizId, isPublished }: QuizActionsMenuProps) {
   }
 
   return (
-    <div className="relative">
+    <div className="relative" ref={menuRef}>
       <button
         onClick={() => setOpen((o) => !o)}
         disabled={loading}
@@ -62,26 +75,25 @@ export function QuizActionsMenu({ quizId, isPublished }: QuizActionsMenuProps) {
       </button>
 
       {open && (
-        <>
-          {/* Backdrop */}
-          <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-          {/* Menu */}
-          <div className="absolute right-0 top-full mt-1 z-20 w-44 glass rounded-xl border border-border shadow-xl overflow-hidden animate-fade-in">
-            <button
-              onClick={handlePublishToggle}
-              className="w-full text-left px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors"
-            >
-              {isPublished ? "○ Unpublish" : "✅ Publish"}
-            </button>
-            <div className="h-px bg-border" />
-            <button
-              onClick={handleDelete}
-              className="w-full text-left px-4 py-3 text-sm text-rose-400 hover:bg-rose-500/10 transition-colors"
-            >
-              🗑 Delete Quiz
-            </button>
-          </div>
-        </>
+        <div className="absolute right-0 top-full mt-1 z-20 w-44 glass rounded-xl border border-border shadow-xl overflow-hidden animate-fade-in">
+          <button
+            onClick={handlePublishToggle}
+            className="w-full text-left px-4 py-3 text-sm text-foreground hover:bg-muted transition-colors"
+          >
+            {isPublished ? "○ Unpublish" : "✅ Publish"}
+          </button>
+          {isPublished && (
+            <>
+              <div className="h-px bg-border" />
+              <button
+                onClick={handleDelete}
+                className="w-full text-left px-4 py-3 text-sm text-rose-400 hover:bg-rose-500/10 transition-colors"
+              >
+                🗑 Delete Quiz
+              </button>
+            </>
+          )}
+        </div>
       )}
     </div>
   );
