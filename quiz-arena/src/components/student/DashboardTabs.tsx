@@ -1,25 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { ClipboardList, Target, Timer, User, ArrowLeft, History, CalendarClock } from "lucide-react";
+import { Target, ArrowLeft, History, CalendarClock } from "lucide-react";
+import { QuizCard } from "./QuizCard";
 
-type Quiz = {
-  id: string;
-  title: string;
-  description: string | null;
-  timeLimit: number;
-  _count: { questions: number };
-  createdBy: { id: string; name: string };
-  attempts: { score: number; totalQuestions: number; timeTaken: number }[];
-};
+import type { Quiz } from "@/types";
 
 export function DashboardTabs({ quizzes }: { quizzes: Quiz[] }) {
   const [activeTab, setActiveTab] = useState<"upcoming" | "history">("upcoming");
   const [selectedTeacherId, setSelectedTeacherId] = useState<string | null>(null);
 
-  const attemptedQuizzes = quizzes.filter((q) => q.attempts.length > 0);
-  const pendingQuizzes = quizzes.filter((q) => q.attempts.length === 0);
+  const attemptedQuizzes = quizzes.filter((q) => (q.attempts?.length ?? 0) > 0);
+  const pendingQuizzes = quizzes.filter((q) => !((q.attempts?.length ?? 0) > 0));
 
   // Group pending quizzes by teacher
   const teachersMap = new Map<string, { id: string; name: string; pendingCount: number }>();
@@ -39,93 +31,6 @@ export function DashboardTabs({ quizzes }: { quizzes: Quiz[] }) {
       : selectedTeacherId
       ? pendingQuizzes.filter((q) => q.createdBy.id === selectedTeacherId)
       : [];
-
-  const renderQuizCard = (quiz: Quiz, i: number) => {
-    const attempt = quiz.attempts[0];
-    const pct = attempt ? Math.round((attempt.score / attempt.totalQuestions) * 100) : null;
-
-    return (
-      <div
-        key={quiz.id}
-        className="glass rounded-2xl p-6 flex flex-col hover:border-primary/40 transition-all duration-300 group animate-fade-in"
-        style={{ animationDelay: `${0.1 + i * 0.05}s` }}
-      >
-        <div className="flex items-start justify-between mb-4">
-          <div className="w-12 h-12 rounded-xl gradient-brand flex items-center justify-center text-white font-bold text-xl transition-transform duration-200 flex-shrink-0">
-            {quiz.title[0].toUpperCase()}
-          </div>
-          {attempt ? (
-            <span
-              className={`text-xs px-2.5 py-1 rounded-full font-bold ${
-                pct! >= 80
-                  ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"
-                  : pct! >= 60
-                  ? "bg-yellow-500/15 text-yellow-400 border border-yellow-500/25"
-                  : "bg-rose-500/15 text-rose-400 border border-rose-500/25"
-              }`}
-            >
-              {pct}%
-            </span>
-          ) : (
-            <span className="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/25 font-medium">
-              New
-            </span>
-          )}
-        </div>
-
-        <h3 className="font-bold text-foreground text-lg mb-1 leading-tight">{quiz.title}</h3>
-        {quiz.description && (
-          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{quiz.description}</p>
-        )}
-
-        <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4 mt-auto pt-3">
-          <span className="flex items-center gap-1.5">
-            <ClipboardList className="w-4 h-4" /> {quiz._count.questions} questions
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Timer className="w-4 h-4" /> {Math.floor(quiz.timeLimit / 60)} min
-          </span>
-          <span className="flex items-center gap-1.5">
-            <User className="w-4 h-4" /> {quiz.createdBy.name}
-          </span>
-        </div>
-
-        {attempt ? (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>
-                Score: {attempt.score}/{attempt.totalQuestions}
-              </span>
-              <span>
-                {Math.floor(attempt.timeTaken / 60)}m {attempt.timeTaken % 60}s
-              </span>
-            </div>
-            <div className="w-full bg-muted rounded-full h-1.5">
-              <div
-                className={`h-1.5 rounded-full transition-all duration-500 ${
-                  pct! >= 80 ? "bg-emerald-400" : pct! >= 60 ? "bg-yellow-400" : "bg-rose-400"
-                }`}
-                style={{ width: `${pct}%` }}
-              />
-            </div>
-            <Link
-              href={`/quiz/${quiz.id}/results`}
-              className="block w-full py-2 text-center text-sm font-medium rounded-lg border border-border text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all"
-            >
-              View Results
-            </Link>
-          </div>
-        ) : (
-          <Link
-            href={`/quiz/${quiz.id}`}
-            className="block w-full py-2.5 text-center text-sm font-semibold rounded-lg gradient-brand text-white hover:opacity-90 transition-all duration-200"
-          >
-            Start Quiz →
-          </Link>
-        )}
-      </div>
-    );
-  };
 
   return (
     <div className="space-y-6">
@@ -180,7 +85,9 @@ export function DashboardTabs({ quizzes }: { quizzes: Quiz[] }) {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                {quizzesToDisplay.map(renderQuizCard)}
+                {quizzesToDisplay.map((quiz, i) => (
+                  <QuizCard key={quiz.id} quiz={quiz} index={i} />
+                ))}
               </div>
             )}
           </div>
@@ -234,7 +141,9 @@ export function DashboardTabs({ quizzes }: { quizzes: Quiz[] }) {
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                  {quizzesToDisplay.map(renderQuizCard)}
+                  {quizzesToDisplay.map((quiz, i) => (
+                    <QuizCard key={quiz.id} quiz={quiz} index={i} />
+                  ))}
                 </div>
               </div>
             )}

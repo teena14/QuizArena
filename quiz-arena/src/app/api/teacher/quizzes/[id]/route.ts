@@ -13,7 +13,7 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const quiz = await prisma.quiz.findUnique({
-    where: { id, createdById: userId },
+    where: { id, createdById: userId, deletedAt: null },
     select: {
       id: true, title: true, description: true, timeLimit: true, isPublished: true,
       questions: { orderBy: { order: "asc" }, select: { id: true, text: true, options: true, correctIndex: true, order: true } }
@@ -30,7 +30,7 @@ export async function PUT(req: NextRequest, { params }: Ctx) {
   const userId = (session?.user as { id: string } | undefined)?.id;
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const existing = await prisma.quiz.findUnique({ where: { id, createdById: userId } });
+  const existing = await prisma.quiz.findUnique({ where: { id, createdById: userId, deletedAt: null } });
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   try {
@@ -77,9 +77,24 @@ export async function DELETE(_req: NextRequest, { params }: Ctx) {
   const userId = (session?.user as { id: string } | undefined)?.id;
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const existing = await prisma.quiz.findUnique({ where: { id, createdById: userId } });
+  const existing = await prisma.quiz.findUnique({ where: { id, createdById: userId, deletedAt: null } });
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  await prisma.quiz.delete({ where: { id } });
+  // Soft Delete
+  await prisma.quiz.update({
+    where: { id },
+    data: { deletedAt: new Date() }
+  });
+  
+  // Audit Log
+  await prisma.auditLog.create({
+    data: {
+      userId,
+      action: "SOFT_DELETE_QUIZ",
+      resource: "Quiz",
+      details: JSON.stringify({ quizId: id })
+    }
+  });
+
   return NextResponse.json({ success: true });
 }

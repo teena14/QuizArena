@@ -3,6 +3,7 @@ import { Inter, Host_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { SessionProvider } from "next-auth/react";
+import { CommandPalette } from "@/components/CommandPalette";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -86,6 +87,7 @@ export default function RootLayout({
         </a>
         <SessionProvider>
           {children}
+          <CommandPalette />
           <Toaster richColors position="top-right" />
         </SessionProvider>
       </body>

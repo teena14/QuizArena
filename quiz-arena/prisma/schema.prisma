@@ -24,8 +24,13 @@ model User {
   id        String   @id @default(cuid())
   name      String
   email     String   @unique
-  password  String
+  password  String?  // Optional for OAuth users
   role      Role     @default(STUDENT)
+  emailVerified    DateTime?
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  provider         String?
+  providerAccountId String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -35,6 +40,7 @@ model User {
   students     User[]        @relation("StudentTeacher")
   quizzes      Quiz[]        @relation("TeacherQuizzes")
   attempts     QuizAttempt[]
+  auditLogs    AuditLog[]    @relation("UserAuditLogs")
 
   @@map("users")
 }
@@ -47,6 +53,7 @@ model Quiz {
   isPublished Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
 
   // Relations
   createdById String
@@ -68,6 +75,7 @@ model Question {
   order        Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  deletedAt    DateTime?
 
   // Relations
   quizId  String
@@ -112,4 +120,17 @@ model Answer {
   @@index([attemptId])
   @@index([questionId])
   @@map("answers")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation("UserAuditLogs", fields: [userId], references: [id], onDelete: Cascade)
+  action    String   // e.g. "CREATE_QUIZ", "DELETE_QUIZ", "RESET_PASSWORD"
+  resource  String   // e.g. "Quiz", "User"
+  details   String?  // JSON stringified details
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("audit_logs")
 }

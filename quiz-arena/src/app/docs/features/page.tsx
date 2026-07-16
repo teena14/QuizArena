@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SiteHeader } from "@/components/marketing/SiteHeader";
+import { SiteFooter } from "@/components/marketing/SiteFooter";
 
 const BASE_URL = "https://quizarena-gpr1.onrender.com";
 
@@ -76,21 +78,7 @@ export default function FeaturesPage() {
 
       <div className="min-h-screen bg-[#111111]">
         {/* ── Header ────────────────────────────────────────────────── */}
-        <header className="border-b border-[#222222]">
-          <nav aria-label="Main navigation" className="flex items-center justify-between px-6 py-5 max-w-4xl mx-auto">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center text-white font-extrabold text-sm" aria-hidden="true">Q</div>
-              <span className="text-xl font-extrabold font-host text-white tracking-tight">
-                Quiz<span className="text-orange-500">Arena</span>
-              </span>
-            </Link>
-            <div className="flex items-center gap-5 text-sm">
-              <Link href="/docs/getting-started" className="text-muted-foreground hover:text-white transition-colors">Getting Started</Link>
-              <Link href="/faq" className="text-muted-foreground hover:text-white transition-colors">FAQ</Link>
-              <Link href="/register" className="px-4 py-2 rounded-lg gradient-brand font-bold text-sm">Get Started</Link>
-            </div>
-          </nav>
-        </header>
+        <SiteHeader />
 
         <main className="max-w-3xl mx-auto px-6 py-16">
           {/* Breadcrumb */}
@@ -167,17 +155,7 @@ export default function FeaturesPage() {
           </div>
         </main>
 
-        <footer className="border-t border-[#222222] py-8 px-6 mt-8">
-          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-            <span>© {new Date().getFullYear()} QuizArena</span>
-            <nav aria-label="Footer navigation" className="flex items-center gap-5">
-              <Link href="/" className="hover:text-white transition-colors">Home</Link>
-              <Link href="/docs/getting-started" className="hover:text-white transition-colors">Getting Started</Link>
-              <Link href="/faq" className="hover:text-white transition-colors">FAQ</Link>
-              <Link href="/login" className="hover:text-white transition-colors">Sign In</Link>
-            </nav>
-          </div>
-        </footer>
+        <SiteFooter />
       </div>
     </>
   );

@@ -15,13 +15,14 @@ export default async function StudentDashboard() {
   const quizzes = await prisma.quiz.findMany({
     where: {
       isPublished: true,
+      deletedAt: null,
       createdBy: {
         students: { some: { id: userId } }
       }
     },
     orderBy: { createdAt: "desc" },
     select: {
-      id: true, title: true, description: true, timeLimit: true, createdAt: true,
+      id: true, title: true, description: true, timeLimit: true, createdAt: true, isPublished: true,
       createdBy: { select: { id: true, name: true } },
       _count: { select: { questions: true } },
       attempts: {

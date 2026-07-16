@@ -75,9 +75,9 @@ Both DB URLs are found at: **Supabase Dashboard → Project Settings → Databas
 
 QuizArena uses React Server Components for data fetching, Next.js middleware for Edge-based route protection, and a server-side grading flow that never exposes correct answers to the client.
 
-→ **Full details, Mermaid diagrams, and API reference:** [`docs/architecture.md`](docs/architecture.md)
+→ **Full details, Mermaid diagrams, and API reference:** [`docs/architecture/architecture.md`](docs/architecture/architecture.md)
 
-→ **Hard decisions & trade-offs:** [`docs/case-study.md`](docs/case-study.md)
+→ **Hard decisions & trade-offs:** [`docs/guides/case-study.md`](docs/guides/case-study.md)
 
 ---
 
@@ -120,7 +120,7 @@ quiz-arena/
 │   ├── types/                    # next-auth.d.ts
 │   ├── auth.ts                   # full NextAuth init (Node runtime)
 │   └── proxy.ts                  # Edge-safe NextAuth re-export
-├── tests/                        # unit + e2e (planned)
+
 ├── .env.example                  # every variable with safe dummy values
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md

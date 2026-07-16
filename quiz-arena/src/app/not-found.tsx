@@ -45,7 +45,7 @@ export default function NotFound() {
           Page not found
         </h1>
         <p className="text-muted-foreground text-base leading-relaxed mb-10">
-          The quiz you&apos;re looking for might have been unpublished, or this URL doesn&apos;t exist.
+          The page you&apos;re looking for might have been moved, deleted, or this URL doesn&apos;t exist.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">

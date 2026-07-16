@@ -4,15 +4,7 @@ import { useState } from "react";
 import { Target, CalendarClock, History } from "lucide-react";
 import { QuizCard } from "./QuizCard";
 
-type Quiz = {
-  id: string;
-  title: string;
-  description: string | null;
-  timeLimit: number;
-  _count: { questions: number };
-  createdBy: { id: string; name: string };
-  attempts: { id: string; score: number; totalQuestions: number; timeTaken: number }[];
-};
+import type { Quiz } from "@/types";
 
 export function ClassroomTabs({ pendingQuizzes, attemptedQuizzes }: { pendingQuizzes: Quiz[], attemptedQuizzes: Quiz[] }) {
   const [activeTab, setActiveTab] = useState<"upcoming" | "history">("upcoming");

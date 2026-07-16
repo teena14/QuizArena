@@ -12,7 +12,7 @@ export default async function EditQuizPage({ params }: { params: Promise<{ id: s
   const userId = (session?.user as { id: string }).id;
 
   const quiz = await prisma.quiz.findUnique({
-    where: { id, createdById: userId },
+    where: { id, createdById: userId, deletedAt: null },
     select: {
       id: true, title: true, description: true, timeLimit: true, isPublished: true,
       questions: {
@@ -26,7 +26,7 @@ export default async function EditQuizPage({ params }: { params: Promise<{ id: s
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
-      <EditQuizClient quiz={quiz} />
+        <EditQuizClient quiz={{ ...quiz, createdBy: { id: "1", name: "You" }, attempts: [] }} />
     </div>
   );
 }

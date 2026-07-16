@@ -3,22 +3,16 @@
 import Link from "next/link";
 import { ClipboardList, Timer, User } from "lucide-react";
 
+import type { Quiz } from "@/types";
+
 type QuizCardProps = {
-  quiz: {
-    id: string;
-    title: string;
-    description: string | null;
-    timeLimit: number;
-    _count: { questions: number };
-    createdBy: { id: string; name: string };
-    attempts: { id: string; score: number; totalQuestions: number; timeTaken: number }[];
-  };
+  quiz: Quiz;
   index?: number;
   disableAnimation?: boolean;
 };
 
 export function QuizCard({ quiz, index = 0, disableAnimation = false }: QuizCardProps) {
-  const attempt = quiz.attempts[0];
+  const attempt = quiz.attempts?.[0];
   const pct = attempt ? Math.round((attempt.score / attempt.totalQuestions) * 100) : null;
 
   return (
@@ -55,8 +49,8 @@ export function QuizCard({ quiz, index = 0, disableAnimation = false }: QuizCard
       )}
 
       <div className="flex items-center gap-3 text-[10px] text-muted-foreground mb-3 mt-auto pt-2">
-        <span className="flex items-center gap-1">
-          <ClipboardList className="w-3.5 h-3.5" /> {quiz._count.questions} q&apos;s
+        <span className="flex items-center gap-1.5">
+          <ClipboardList className="w-4 h-4" /> {quiz._count?.questions || 0} questions
         </span>
         <span className="flex items-center gap-1">
           <Timer className="w-3.5 h-3.5" /> {Math.floor(quiz.timeLimit / 60)}m

@@ -4,14 +4,22 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { ClassroomTabs } from "@/components/student/ClassroomTabs";
 import { notFound } from "next/navigation";
+import { SearchBar } from "@/components/shared/SearchBar";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Classroom" };
 
-export default async function ClassroomDetailsPage({ params }: { params: Promise<{ teacherId: string }> }) {
+export default async function ClassroomDetailsPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ teacherId: string }>;
+  searchParams: Promise<{ q?: string }>;
+}) {
   const session = await auth();
   const userId = (session?.user as { id: string; name: string }).id;
   const { teacherId } = await params;
+  const { q = "" } = await searchParams;
 
   const teacher = await prisma.user.findUnique({
     where: { id: teacherId, role: "TEACHER" }
@@ -27,11 +35,14 @@ export default async function ClassroomDetailsPage({ params }: { params: Promise
       createdById: teacherId,
       createdBy: {
         students: { some: { id: userId } }
-      }
+      },
+      ...(q && {
+        title: { contains: q, mode: "insensitive" }
+      })
     },
     orderBy: { createdAt: "desc" },
     select: {
-      id: true, title: true, description: true, timeLimit: true, createdAt: true,
+      id: true, title: true, description: true, timeLimit: true, createdAt: true, isPublished: true,
       createdBy: { select: { id: true, name: true } },
       _count: { select: { questions: true } },
       attempts: {
@@ -47,19 +58,22 @@ export default async function ClassroomDetailsPage({ params }: { params: Promise
 
   return (
     <div className="p-8 space-y-8">
-      <div className="animate-fade-in">
-        <Link
-          href="/student/classrooms"
-          className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors mb-4"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" /> Back to Classrooms
-        </Link>
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full gradient-brand flex items-center justify-center text-white font-bold text-lg">
-            {teacher.name[0].toUpperCase()}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in">
+        <div>
+          <Link
+            href="/student/classrooms"
+            className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors mb-4"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to Classrooms
+          </Link>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full gradient-brand flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+              {teacher.name[0].toUpperCase()}
+            </div>
+            <h1 className="text-2xl font-bold text-foreground">{teacher.name}&apos;s Class</h1>
           </div>
-          <h1 className="text-2xl font-bold text-foreground">{teacher.name}&apos;s Class</h1>
         </div>
+        <SearchBar placeholder="Search quizzes..." />
       </div>
 
       <ClassroomTabs pendingQuizzes={pendingQuizzes} attemptedQuizzes={attemptedQuizzes} />

@@ -4,21 +4,13 @@ import { useState } from "react";
 import { Target, ArrowLeft } from "lucide-react";
 import { QuizCard } from "./QuizCard";
 
-type Quiz = {
-  id: string;
-  title: string;
-  description: string | null;
-  timeLimit: number;
-  _count: { questions: number };
-  createdBy: { id: string; name: string };
-  attempts: { id: string; score: number; totalQuestions: number; timeTaken: number }[];
-};
+import type { Quiz } from "@/types";
 
-export function StudentView({ quizzes, view }: { quizzes: Quiz[]; view: "dashboard" | "upcoming" | "history" }) {
+export function StudentView({ quizzes, view, searchQuery = "" }: { quizzes: Quiz[]; view: "dashboard" | "upcoming" | "history"; searchQuery?: string }) {
   const [selectedTeacherId, setSelectedTeacherId] = useState<string | null>(null);
 
-  const attemptedQuizzes = quizzes.filter((q) => q.attempts.length > 0);
-  const pendingQuizzes = quizzes.filter((q) => q.attempts.length === 0);
+  const attemptedQuizzes = quizzes.filter((q) => (q.attempts?.length ?? 0) > 0);
+  const pendingQuizzes = quizzes.filter((q) => !q.attempts || q.attempts.length === 0);
 
   const isGroupedView = view === "history" || view === "upcoming";
   const sourceQuizzes = view === "history" ? attemptedQuizzes : pendingQuizzes;
@@ -35,6 +27,8 @@ export function StudentView({ quizzes, view }: { quizzes: Quiz[]; view: "dashboa
   }
 
   const teachers = Array.from(teachersMap.values());
+  // No client-side filtering: search is handled server-side (quizzes are pre-filtered),
+  // so teachers with no matching quizzes are already excluded from teachersMap.
   const selectedTeacher = selectedTeacherId ? teachersMap.get(selectedTeacherId) : null;
 
   const quizzesToDisplay = view === "dashboard"
@@ -74,10 +68,12 @@ export function StudentView({ quizzes, view }: { quizzes: Quiz[]; view: "dashboa
                   <Target className="w-12 h-12" />
                 </div>
                 <h2 className="text-lg font-semibold text-foreground mb-1">
-                  {view === "history" ? "No quizzes completed yet" : "No upcoming quizzes"}
+                  {searchQuery ? "No matches found" : (view === "history" ? "No quizzes completed yet" : "No upcoming quizzes")}
                 </h2>
                 <p className="text-muted-foreground text-xs">
-                  {view === "history"
+                  {searchQuery
+                    ? `No quizzes matching "${searchQuery}".`
+                    : view === "history"
                     ? "Your completed quizzes will appear here."
                     : "Check back later — your teachers are preparing quizzes!"}
                 </p>

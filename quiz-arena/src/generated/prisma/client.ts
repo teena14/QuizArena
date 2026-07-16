@@ -66,3 +66,8 @@ export type QuizAttempt = Prisma.QuizAttemptModel
  * 
  */
 export type Answer = Prisma.AnswerModel
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = Prisma.AuditLogModel

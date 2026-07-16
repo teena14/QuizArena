@@ -22,11 +22,11 @@ export default async function TeacherDashboard() {
   }
 
   const [totalQuizzes, publishedQuizzes, totalAttempts, recentQuizzes] = await Promise.all([
-    prisma.quiz.count({ where: { createdById: userId } }),
-    prisma.quiz.count({ where: { createdById: userId, isPublished: true } }),
+    prisma.quiz.count({ where: { createdById: userId, deletedAt: null } }),
+    prisma.quiz.count({ where: { createdById: userId, isPublished: true, deletedAt: null } }),
     prisma.quizAttempt.count({ where: { quiz: { createdById: userId } } }),
     prisma.quiz.findMany({
-      where: { createdById: userId },
+      where: { createdById: userId, deletedAt: null },
       orderBy: { createdAt: "desc" },
       take: 5,
       select: {

@@ -42,6 +42,7 @@ export type QuizMinAggregateOutputType = {
   isPublished: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
   createdById: string | null
 }
 
@@ -53,6 +54,7 @@ export type QuizMaxAggregateOutputType = {
   isPublished: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
   createdById: string | null
 }
 
@@ -64,6 +66,7 @@ export type QuizCountAggregateOutputType = {
   isPublished: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
   createdById: number
   _all: number
 }
@@ -85,6 +88,7 @@ export type QuizMinAggregateInputType = {
   isPublished?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   createdById?: true
 }
 
@@ -96,6 +100,7 @@ export type QuizMaxAggregateInputType = {
   isPublished?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   createdById?: true
 }
 
@@ -107,6 +112,7 @@ export type QuizCountAggregateInputType = {
   isPublished?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   createdById?: true
   _all?: true
 }
@@ -205,6 +211,7 @@ export type QuizGroupByOutputType = {
   isPublished: boolean
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
   createdById: string
   _count: QuizCountAggregateOutputType | null
   _avg: QuizAvgAggregateOutputType | null
@@ -239,6 +246,7 @@ export type QuizWhereInput = {
   isPublished?: Prisma.BoolFilter<"Quiz"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Quiz"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Quiz"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Quiz"> | Date | string | null
   createdById?: Prisma.StringFilter<"Quiz"> | string
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   questions?: Prisma.QuestionListRelationFilter
@@ -253,6 +261,7 @@ export type QuizOrderByWithRelationInput = {
   isPublished?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdBy?: Prisma.UserOrderByWithRelationInput
   questions?: Prisma.QuestionOrderByRelationAggregateInput
@@ -270,6 +279,7 @@ export type QuizWhereUniqueInput = Prisma.AtLeast<{
   isPublished?: Prisma.BoolFilter<"Quiz"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Quiz"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Quiz"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Quiz"> | Date | string | null
   createdById?: Prisma.StringFilter<"Quiz"> | string
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   questions?: Prisma.QuestionListRelationFilter
@@ -284,6 +294,7 @@ export type QuizOrderByWithAggregationInput = {
   isPublished?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrder
   _count?: Prisma.QuizCountOrderByAggregateInput
   _avg?: Prisma.QuizAvgOrderByAggregateInput
@@ -303,6 +314,7 @@ export type QuizScalarWhereWithAggregatesInput = {
   isPublished?: Prisma.BoolWithAggregatesFilter<"Quiz"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Quiz"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Quiz"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Quiz"> | Date | string | null
   createdById?: Prisma.StringWithAggregatesFilter<"Quiz"> | string
 }
 
@@ -314,6 +326,7 @@ export type QuizCreateInput = {
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   createdBy: Prisma.UserCreateNestedOneWithoutQuizzesInput
   questions?: Prisma.QuestionCreateNestedManyWithoutQuizInput
   attempts?: Prisma.QuizAttemptCreateNestedManyWithoutQuizInput
@@ -327,6 +340,7 @@ export type QuizUncheckedCreateInput = {
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   createdById: string
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutQuizInput
   attempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutQuizInput
@@ -340,6 +354,7 @@ export type QuizUpdateInput = {
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneRequiredWithoutQuizzesNestedInput
   questions?: Prisma.QuestionUpdateManyWithoutQuizNestedInput
   attempts?: Prisma.QuizAttemptUpdateManyWithoutQuizNestedInput
@@ -353,6 +368,7 @@ export type QuizUncheckedUpdateInput = {
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   questions?: Prisma.QuestionUncheckedUpdateManyWithoutQuizNestedInput
   attempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutQuizNestedInput
@@ -366,6 +382,7 @@ export type QuizCreateManyInput = {
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   createdById: string
 }
 
@@ -377,6 +394,7 @@ export type QuizUpdateManyMutationInput = {
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type QuizUncheckedUpdateManyInput = {
@@ -387,6 +405,7 @@ export type QuizUncheckedUpdateManyInput = {
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -408,6 +427,7 @@ export type QuizCountOrderByAggregateInput = {
   isPublished?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
 }
 
@@ -423,6 +443,7 @@ export type QuizMaxOrderByAggregateInput = {
   isPublished?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
 }
 
@@ -434,6 +455,7 @@ export type QuizMinOrderByAggregateInput = {
   isPublished?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
 }
 
@@ -536,6 +558,7 @@ export type QuizCreateWithoutCreatedByInput = {
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   questions?: Prisma.QuestionCreateNestedManyWithoutQuizInput
   attempts?: Prisma.QuizAttemptCreateNestedManyWithoutQuizInput
 }
@@ -548,6 +571,7 @@ export type QuizUncheckedCreateWithoutCreatedByInput = {
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutQuizInput
   attempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutQuizInput
 }
@@ -589,6 +613,7 @@ export type QuizScalarWhereInput = {
   isPublished?: Prisma.BoolFilter<"Quiz"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Quiz"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Quiz"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Quiz"> | Date | string | null
   createdById?: Prisma.StringFilter<"Quiz"> | string
 }
 
@@ -600,6 +625,7 @@ export type QuizCreateWithoutQuestionsInput = {
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   createdBy: Prisma.UserCreateNestedOneWithoutQuizzesInput
   attempts?: Prisma.QuizAttemptCreateNestedManyWithoutQuizInput
 }
@@ -612,6 +638,7 @@ export type QuizUncheckedCreateWithoutQuestionsInput = {
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   createdById: string
   attempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutQuizInput
 }
@@ -640,6 +667,7 @@ export type QuizUpdateWithoutQuestionsInput = {
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneRequiredWithoutQuizzesNestedInput
   attempts?: Prisma.QuizAttemptUpdateManyWithoutQuizNestedInput
 }
@@ -652,6 +680,7 @@ export type QuizUncheckedUpdateWithoutQuestionsInput = {
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   attempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutQuizNestedInput
 }
@@ -664,6 +693,7 @@ export type QuizCreateWithoutAttemptsInput = {
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   createdBy: Prisma.UserCreateNestedOneWithoutQuizzesInput
   questions?: Prisma.QuestionCreateNestedManyWithoutQuizInput
 }
@@ -676,6 +706,7 @@ export type QuizUncheckedCreateWithoutAttemptsInput = {
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   createdById: string
   questions?: Prisma.QuestionUncheckedCreateNestedManyWithoutQuizInput
 }
@@ -704,6 +735,7 @@ export type QuizUpdateWithoutAttemptsInput = {
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneRequiredWithoutQuizzesNestedInput
   questions?: Prisma.QuestionUpdateManyWithoutQuizNestedInput
 }
@@ -716,6 +748,7 @@ export type QuizUncheckedUpdateWithoutAttemptsInput = {
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   questions?: Prisma.QuestionUncheckedUpdateManyWithoutQuizNestedInput
 }
@@ -728,6 +761,7 @@ export type QuizCreateManyCreatedByInput = {
   isPublished?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type QuizUpdateWithoutCreatedByInput = {
@@ -738,6 +772,7 @@ export type QuizUpdateWithoutCreatedByInput = {
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   questions?: Prisma.QuestionUpdateManyWithoutQuizNestedInput
   attempts?: Prisma.QuizAttemptUpdateManyWithoutQuizNestedInput
 }
@@ -750,6 +785,7 @@ export type QuizUncheckedUpdateWithoutCreatedByInput = {
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   questions?: Prisma.QuestionUncheckedUpdateManyWithoutQuizNestedInput
   attempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutQuizNestedInput
 }
@@ -762,6 +798,7 @@ export type QuizUncheckedUpdateManyWithoutCreatedByInput = {
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -812,6 +849,7 @@ export type QuizSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   isPublished?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   createdById?: boolean
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   questions?: boolean | Prisma.Quiz$questionsArgs<ExtArgs>
@@ -827,6 +865,7 @@ export type QuizSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isPublished?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   createdById?: boolean
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["quiz"]>
@@ -839,6 +878,7 @@ export type QuizSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isPublished?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   createdById?: boolean
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["quiz"]>
@@ -851,10 +891,11 @@ export type QuizSelectScalar = {
   isPublished?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   createdById?: boolean
 }
 
-export type QuizOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "timeLimit" | "isPublished" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["quiz"]>
+export type QuizOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "timeLimit" | "isPublished" | "createdAt" | "updatedAt" | "deletedAt" | "createdById", ExtArgs["result"]["quiz"]>
 export type QuizInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   questions?: boolean | Prisma.Quiz$questionsArgs<ExtArgs>
@@ -883,6 +924,7 @@ export type $QuizPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     isPublished: boolean
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
     createdById: string
   }, ExtArgs["result"]["quiz"]>
   composites: {}
@@ -1317,6 +1359,7 @@ export interface QuizFieldRefs {
   readonly isPublished: Prisma.FieldRef<"Quiz", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Quiz", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Quiz", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"Quiz", 'DateTime'>
   readonly createdById: Prisma.FieldRef<"Quiz", 'String'>
 }
     

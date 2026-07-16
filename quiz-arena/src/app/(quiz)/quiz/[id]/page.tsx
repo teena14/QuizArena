@@ -13,7 +13,7 @@ export default async function QuizLobbyPage({ params }: { params: Promise<{ id: 
   const userId = (session?.user as { id: string }).id;
 
   const quiz = await prisma.quiz.findUnique({
-    where: { id, isPublished: true },
+    where: { id, isPublished: true, deletedAt: null },
     select: {
       id: true,
       title: true,

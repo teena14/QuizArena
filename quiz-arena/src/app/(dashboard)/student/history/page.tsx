@@ -18,7 +18,7 @@ export default async function StudentDashboard() {
     },
     orderBy: { createdAt: "desc" },
     select: {
-      id: true, title: true, description: true, timeLimit: true, createdAt: true,
+      id: true, title: true, description: true, timeLimit: true, createdAt: true, isPublished: true,
       createdBy: { select: { id: true, name: true } },
       _count: { select: { questions: true } },
       attempts: {

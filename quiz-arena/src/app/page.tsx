@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { SiteHeader } from "@/components/marketing/SiteHeader";
+import { SiteFooter } from "@/components/marketing/SiteFooter";
 
 const BASE_URL = "https://quizarena-gpr1.onrender.com";
 
@@ -103,45 +105,7 @@ export default async function LandingPage() {
       <main id="main-content" className="bg-[#111111] overflow-hidden">
 
         {/* ── Navbar ──────────────────────────────────────────────────── */}
-        <header className="relative z-10 border-b border-[#222222]">
-          <nav
-            aria-label="Main navigation"
-            className="flex items-center justify-between px-6 py-5 max-w-7xl mx-auto"
-          >
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white font-extrabold text-lg" aria-hidden="true">Q</div>
-              <span className="text-2xl font-extrabold font-host text-white tracking-tight">
-                Quiz<span className="text-orange-500">Arena</span>
-              </span>
-            </div>
-            <div className="flex items-center gap-6">
-              <Link
-                href="/docs/getting-started"
-                className="hidden sm:block text-sm font-medium text-muted-foreground hover:text-white transition-colors"
-              >
-                Docs
-              </Link>
-              <Link
-                href="/faq"
-                className="hidden sm:block text-sm font-medium text-muted-foreground hover:text-white transition-colors"
-              >
-                FAQ
-              </Link>
-              <Link
-                href="/login"
-                className="text-base font-bold font-host text-white hover:text-white/80 transition-colors"
-              >
-                Login
-              </Link>
-              <Link
-                href="/register"
-                className="px-5 py-2.5 text-base font-bold font-host rounded-lg gradient-brand transition-opacity"
-              >
-                Get Started
-              </Link>
-            </div>
-          </nav>
-        </header>
+        <SiteHeader />
 
         {/* ── Hero ────────────────────────────────────────────────────── */}
         <section
@@ -280,24 +244,7 @@ export default async function LandingPage() {
         </section>
 
         {/* ── Footer ──────────────────────────────────────────────────── */}
-        <footer className="relative z-10 border-t border-border py-8 px-6">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-            <span>© {new Date().getFullYear()} QuizArena. Built with Next.js, Prisma &amp; Supabase.</span>
-            <nav aria-label="Footer navigation" className="flex items-center gap-6">
-              <Link href="/docs/getting-started" className="hover:text-white transition-colors">Docs</Link>
-              <Link href="/faq" className="hover:text-white transition-colors">FAQ</Link>
-              <Link href="/login" className="hover:text-white transition-colors">Sign In</Link>
-              <a
-                href="https://github.com/your-username/quiz-arena"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-white transition-colors"
-              >
-                GitHub
-              </a>
-            </nav>
-          </div>
-        </footer>
+        <SiteFooter />
       </main>
     </>
   );

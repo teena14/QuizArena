@@ -55,7 +55,8 @@ export const ModelName = {
   Quiz: 'Quiz',
   Question: 'Question',
   QuizAttempt: 'QuizAttempt',
-  Answer: 'Answer'
+  Answer: 'Answer',
+  AuditLog: 'AuditLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -80,6 +81,11 @@ export const UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   role: 'role',
+  emailVerified: 'emailVerified',
+  resetToken: 'resetToken',
+  resetTokenExpiry: 'resetTokenExpiry',
+  provider: 'provider',
+  providerAccountId: 'providerAccountId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   classCode: 'classCode'
@@ -96,6 +102,7 @@ export const QuizScalarFieldEnum = {
   isPublished: 'isPublished',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   createdById: 'createdById'
 } as const
 
@@ -110,6 +117,7 @@ export const QuestionScalarFieldEnum = {
   order: 'order',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   quizId: 'quizId'
 } as const
 
@@ -137,6 +145,18 @@ export const AnswerScalarFieldEnum = {
 } as const
 
 export type AnswerScalarFieldEnum = (typeof AnswerScalarFieldEnum)[keyof typeof AnswerScalarFieldEnum]
+
+
+export const AuditLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  action: 'action',
+  resource: 'resource',
+  details: 'details',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
 export const SortOrder = {

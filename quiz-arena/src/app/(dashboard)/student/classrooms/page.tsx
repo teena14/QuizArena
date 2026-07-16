@@ -2,11 +2,17 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Target, Users } from "lucide-react";
+import { SearchBar } from "@/components/shared/SearchBar";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "My Classrooms" };
 
-export default async function ClassroomsPage() {
+export default async function ClassroomsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q = "" } = await searchParams;
   const session = await auth();
   const userId = (session?.user as { id: string; name: string }).id;
 
@@ -18,7 +24,7 @@ export default async function ClassroomsPage() {
       }
     },
     select: {
-      id: true,
+      id: true, title: true, description: true, timeLimit: true, createdAt: true, isPublished: true,
       createdBy: { select: { id: true, name: true } },
       attempts: {
         where: { studentId: userId },
@@ -46,9 +52,12 @@ export default async function ClassroomsPage() {
 
   return (
     <div className="p-8 space-y-8">
-      <div className="flex items-center gap-3 animate-fade-in">
-        <Users className="w-8 h-8 text-primary" />
-        <h1 className="text-2xl font-bold text-foreground">My Classrooms</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in">
+        <div className="flex items-center gap-3">
+          <Users className="w-8 h-8 text-primary" />
+          <h1 className="text-2xl font-bold text-foreground">My Classrooms</h1>
+        </div>
+        <SearchBar placeholder="Search classrooms..." />
       </div>
 
       <div className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
@@ -57,12 +66,18 @@ export default async function ClassroomsPage() {
             <div className="flex justify-center mb-3 text-muted-foreground">
               <Target className="w-12 h-12" />
             </div>
-            <h2 className="text-lg font-semibold text-foreground mb-1">No classrooms yet</h2>
-            <p className="text-muted-foreground text-xs">Join a class using your teacher&apos;s code to see classrooms here.</p>
+            <h2 className="text-lg font-semibold text-foreground mb-1">
+              {q ? "No matches found" : "No classrooms yet"}
+            </h2>
+            <p className="text-muted-foreground text-xs">
+              {q ? `No classrooms matching "${q}".` : "Join a class using your teacher's code to see classrooms here."}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {teachers.map((teacher, i) => (
+            {teachers
+              .filter(t => t.name.toLowerCase().includes(q.toLowerCase()))
+              .map((teacher, i) => (
               <Link
                 key={teacher.id}
                 href={`/student/classrooms/${teacher.id}`}

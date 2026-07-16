@@ -13,7 +13,7 @@ export default async function QuizResultsPage({ params }: { params: Promise<{ id
   const userId = (session?.user as { id: string }).id;
 
   const quiz = await prisma.quiz.findUnique({
-    where: { id, createdById: userId },
+    where: { id, createdById: userId, deletedAt: null },
     select: {
       title: true,
       timeLimit: true,
