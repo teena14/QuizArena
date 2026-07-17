@@ -17,21 +17,19 @@ export const authConfig: NextAuthConfig = {
     async jwt({ token, user, trigger, session }) {
       if (trigger === "update" && session) {
         if (session.name) token.name = session.name;
-        if (session.image !== undefined) token.image = session.image;
       }
       if (user) {
         token.id = user.id;
         token.name = user.name;
         token.role = (user as { role?: string }).role;
-        token.image = user.image;
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string;
+        session.user.name = token.name as string;
         session.user.role = token.role as string;
-        session.user.image = token.image as string | null;
       }
       return session;
     },

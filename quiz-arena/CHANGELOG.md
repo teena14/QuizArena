@@ -40,6 +40,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 - **Session State Sync**: Resolved an issue where updating the profile in the database did not immediately reflect the new name or avatar in the sidebar. Configured `auth.config.ts` to support the `trigger === "update"` event and implemented `useSession().update()` to instantly sync the client session cookie with new database values.
+- **🔴 Server Action Crash & Cookie Bloat** ([ERR-008](docs/errors/ERR-008-server-action-not-found-cookie-bloat.md)): Fixed a critical bug where uploading a 1MB profile image caused the NextAuth session cookie to exceed browser limits, resulting in a server action failure (`UnrecognizedActionError`) and severe UI lag. The image is now excluded from the JWT session entirely and is fetched directly from the database in the layout layer.
 
 ---
 

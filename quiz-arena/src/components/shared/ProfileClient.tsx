@@ -57,7 +57,7 @@ export function ProfileClient({ user }: ProfileClientProps) {
     
     const result = await updateProfile(name, image);
     if (result.success) {
-      await update({ name, image });
+      await update({ name });
       toast.success("Profile updated successfully");
       router.refresh();
     } else {
