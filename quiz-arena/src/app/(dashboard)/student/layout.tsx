@@ -10,13 +10,13 @@ export const metadata: Metadata = {
 
 export default async function StudentLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  const user = session?.user as { id: string; name: string; email: string; role: string } | undefined;
+  const user = session?.user as { id: string; name: string; email: string; role: string; image?: string | null } | undefined;
 
   if (!user || user.role !== "STUDENT") redirect("/login");
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar role="STUDENT" userName={user.name} userEmail={user.email} />
+      <Sidebar role="STUDENT" userName={user.name} userEmail={user.email} userImage={user.image} />
       <main className="flex-1 overflow-auto">
         {children}
       </main>

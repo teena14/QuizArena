@@ -74,9 +74,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             });
           }
           
-          // Attach role to user object so jwt callback picks it up
+          // Attach role and image to user object so jwt callback picks it up
           user.id = existingUser.id;
           (user as unknown as { role: string }).role = existingUser.role;
+          (user as unknown as { image: string | null }).image = existingUser.image;
           return true;
         } catch (error) {
           console.error("Google OAuth signIn error:", error);

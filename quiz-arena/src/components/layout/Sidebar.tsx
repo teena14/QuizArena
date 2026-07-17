@@ -16,6 +16,7 @@ interface SidebarProps {
   role: "TEACHER" | "STUDENT";
   userName: string;
   userEmail: string;
+  userImage?: string | null;
 }
 
 const teacherNav: NavItem[] = [
@@ -29,7 +30,7 @@ const studentNav: NavItem[] = [
   { href: "/student/upcoming", label: "Upcoming", icon: <CalendarClock className="w-5 h-5" /> },
 ];
 
-export function Sidebar({ role, userName, userEmail }: SidebarProps) {
+export function Sidebar({ role, userName, userEmail, userImage }: SidebarProps) {
   const pathname = usePathname();
   const [signingOut, setSigningOut] = useState(false);
   const navItems = role === "TEACHER" ? teacherNav : studentNav;
@@ -55,7 +56,6 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
         </Link>
       </div>
 
-
       {/* Nav */}
       <nav className="flex-1 flex flex-col">
         {navItems.map((item) => {
@@ -80,15 +80,26 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
 
       {/* User */}
       <div className="p-4 border-t border-border">
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-muted mb-3">
-          <div className="w-9 h-9 rounded-full gradient-brand flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
-            {initials}
+        <Link 
+          href={role === "TEACHER" ? "/teacher/profile" : "/student/profile"}
+          className="relative flex items-center gap-3 p-3 rounded-xl bg-muted hover:bg-muted/80 mb-3 transition-colors group cursor-pointer"
+        >
+          <div className="w-9 h-9 rounded-full gradient-brand flex items-center justify-center text-white font-semibold text-sm flex-shrink-0 overflow-hidden relative">
+            {userImage ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={userImage} alt={userName} className="w-full h-full object-cover" />
+            ) : (
+              initials
+            )}
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <Edit className="w-4 h-4 text-white" />
+            </div>
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <p className="text-sm font-medium text-foreground truncate">{userName}</p>
             <p className="text-xs text-muted-foreground truncate">{userEmail}</p>
           </div>
-        </div>
+        </Link>
         <button
           onClick={handleSignOut}
           disabled={signingOut}

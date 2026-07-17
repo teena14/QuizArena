@@ -18,6 +18,7 @@ export const authConfig: NextAuthConfig = {
       if (user) {
         token.id = user.id;
         token.role = (user as { role?: string }).role;
+        token.image = user.image;
       }
       return token;
     },
@@ -25,6 +26,7 @@ export const authConfig: NextAuthConfig = {
       if (token) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
+        session.user.image = token.image as string | null;
       }
       return session;
     },

@@ -36,7 +36,7 @@ function LoginContent() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12 relative overflow-hidden">
       {/* Ambient */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[-15%] left-[-10%] w-[500px] h-[500px] rounded-full opacity-20 blur-3xl"

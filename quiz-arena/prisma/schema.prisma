@@ -25,6 +25,7 @@ model User {
   name      String
   email     String   @unique
   password  String?  // Optional for OAuth users
+  image     String?  @db.Text
   role      Role     @default(STUDENT)
   emailVerified    DateTime?
   resetToken       String?
