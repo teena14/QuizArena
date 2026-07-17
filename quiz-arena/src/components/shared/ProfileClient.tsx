@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { updateProfile, deleteAccount } from "@/actions/profile";
 import { toast } from "sonner";
-import { signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { Camera, Trash2, Loader2, AlertTriangle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -12,6 +12,7 @@ interface ProfileClientProps {
     id: string;
     name: string;
     email: string;
+    role: string;
     image?: string | null;
   };
 }
@@ -20,6 +21,7 @@ const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
 
 export function ProfileClient({ user }: ProfileClientProps) {
   const router = useRouter();
+  const { update } = useSession();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [name, setName] = useState(user.name);
@@ -55,6 +57,7 @@ export function ProfileClient({ user }: ProfileClientProps) {
     
     const result = await updateProfile(name, image);
     if (result.success) {
+      await update({ name, image });
       toast.success("Profile updated successfully");
       router.refresh();
     } else {
@@ -80,6 +83,12 @@ export function ProfileClient({ user }: ProfileClientProps) {
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-8 animate-fade-in">
       <div>
+        <button 
+          onClick={() => router.push(user.role === "TEACHER" ? "/teacher" : "/student")}
+          className="text-sm font-medium text-muted-foreground hover:text-foreground mb-4 flex items-center transition-colors"
+        >
+          &larr; Back to Dashboard
+        </button>
         <h1 className="text-3xl font-bold text-foreground">Profile Settings</h1>
         <p className="text-muted-foreground mt-2">Manage your account details and preferences.</p>
       </div>

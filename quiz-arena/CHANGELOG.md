@@ -30,6 +30,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.3.0] — 2026-07-17 (User Profiles)
+
+### Added
+- **User Profile Page**: Added `/profile` pages for both teachers and students.
+- **Avatar Uploads**: Added the ability to upload a profile picture. The image is validated on the client (max 1MB limit), converted to base64, and stored securely in the database.
+- **Account Deletion**: Added a "Danger Zone" allowing users to permanently delete their accounts. This correctly cascades to delete all their associated quizzes and attempts.
+- **Clickable Sidebar Profile**: The user profile section in the sidebar is now an interactive button that links to the settings page, and dynamically displays the uploaded avatar if available.
+
+### Fixed
+- **Session State Sync**: Resolved an issue where updating the profile in the database did not immediately reflect the new name or avatar in the sidebar. Configured `auth.config.ts` to support the `trigger === "update"` event and implemented `useSession().update()` to instantly sync the client session cookie with new database values.
+
+---
+
 ## [1.2.0] — 2026-07-16 (Production Refactor)
 
 ### Changed

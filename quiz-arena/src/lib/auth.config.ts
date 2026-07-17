@@ -14,9 +14,14 @@ export const authConfig: NextAuthConfig = {
     maxAge: 7 * 24 * 60 * 60,
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === "update" && session) {
+        if (session.name) token.name = session.name;
+        if (session.image !== undefined) token.image = session.image;
+      }
       if (user) {
         token.id = user.id;
+        token.name = user.name;
         token.role = (user as { role?: string }).role;
         token.image = user.image;
       }
