@@ -18,7 +18,7 @@ export default async function TeacherLayout({ children }: { children: React.Reac
   const dbUser = await prisma.user.findUnique({ where: { id: user.id }, select: { image: true } });
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex h-screen bg-background">
       <Sidebar role="TEACHER" userName={user.name} userEmail={user.email} userImage={dbUser?.image} />
       <main className="flex-1 overflow-auto">
         {children}
