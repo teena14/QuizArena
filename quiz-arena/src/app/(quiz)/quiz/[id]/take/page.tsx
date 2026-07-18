@@ -197,8 +197,8 @@ export default function TakeQuizPage({ params }: { params: Promise<{ id: string 
         </aside>
 
         {/* Question Area */}
-        <div className="flex-1 space-y-6">
-          <div className="glass rounded-2xl p-6 animate-fade-in" key={q.id}>
+        <div className="flex-1 space-y-6 animate-fade-in" key={q.id}>
+          <div className="glass rounded-2xl p-6">
             {/* Question header */}
             <div className="flex items-center justify-between mb-5">
               <span className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">
