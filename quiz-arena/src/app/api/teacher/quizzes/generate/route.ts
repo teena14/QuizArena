@@ -73,16 +73,40 @@ Return the output as a JSON array matching the required schema.
     // We should pass a structured Request to the SDK
     const parts = [...contents, { text: prompt }];
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash", // Using 2.5-flash for speed and multi-modal support
-      contents: parts,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: responseSchema,
-      }
-    });
+    let response;
+    let retries = 3;
+    let delay = 1000; // start with 1 second delay
 
-    const resultText = response.text;
+    while (retries > 0) {
+      try {
+        response = await ai.models.generateContent({
+          model: "gemini-2.5-flash", // Using 2.5-flash for speed and multi-modal support
+          contents: parts,
+          config: {
+            responseMimeType: "application/json",
+            responseSchema: responseSchema as any,
+          }
+        });
+        break; // Success, exit retry loop
+      } catch (err: any) {
+        const isRetryable = 
+          err?.status === 503 || 
+          err?.status === 429 || 
+          err?.message?.includes("503") || 
+          err?.message?.includes("429") ||
+          err?.message?.includes("UNAVAILABLE");
+          
+        if (isRetryable && retries > 1) {
+          retries--;
+          await new Promise(resolve => setTimeout(resolve, delay));
+          delay *= 2; // Exponential backoff (1s, 2s)
+        } else {
+          throw err; // Out of retries or non-retryable error
+        }
+      }
+    }
+
+    const resultText = response?.text;
     if (!resultText) {
       throw new Error("No response from AI");
     }

@@ -86,19 +86,18 @@ export async function deleteQuizAction(id: string) {
   const existing = await prisma.quiz.findUnique({ where: { id, createdById: userId, deletedAt: null } });
   if (!existing) throw new Error("Not found");
 
-  // Soft Delete
-  await prisma.quiz.update({
-    where: { id },
-    data: { deletedAt: new Date() }
+  // Hard Delete
+  await prisma.quiz.delete({
+    where: { id }
   });
   
   // Audit Log
   await prisma.auditLog.create({
     data: {
       userId,
-      action: "SOFT_DELETE_QUIZ",
+      action: "HARD_DELETE_QUIZ",
       resource: "Quiz",
-      details: JSON.stringify({ quizId: id })
+      details: JSON.stringify({ quizId: id, title: existing.title })
     }
   });
 
