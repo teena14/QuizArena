@@ -1,20 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { GoogleGenAI, Type, Schema } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
-const responseSchema: Schema = {
-  type: Type.ARRAY,
+const responseSchema = {
+  type: "ARRAY",
   items: {
-    type: Type.OBJECT,
+    type: "OBJECT",
     properties: {
-      text: { type: Type.STRING },
+      text: { type: "STRING" },
       options: {
-        type: Type.ARRAY,
-        items: { type: Type.STRING },
+        type: "ARRAY",
+        items: { type: "STRING" },
       },
-      correctIndex: { type: Type.INTEGER },
+      correctIndex: { type: "INTEGER" },
     },
     required: ["text", "options", "correctIndex"],
   },
@@ -22,6 +20,7 @@ const responseSchema: Schema = {
 
 export async function POST(req: NextRequest) {
   try {
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const session = await auth();
     if (!session || session.user.role !== "TEACHER") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
