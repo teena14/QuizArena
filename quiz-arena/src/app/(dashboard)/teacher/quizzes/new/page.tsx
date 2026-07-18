@@ -79,13 +79,6 @@ export default function NewQuizPage() {
 
       <EditQuizForm form={form} setForm={setForm} />
 
-      <QuestionEditor
-        questions={questions}
-        setQuestions={setQuestions}
-        showAiConfig={showAiConfig}
-        onShowAiConfig={() => setShowAiConfig(!showAiConfig)}
-      />
-
       {showAiConfig && (
         <AiGeneratorConfig
           onGenerate={(newQuestions) => setQuestions((prev) => {
@@ -98,6 +91,13 @@ export default function NewQuizPage() {
           onClose={() => setShowAiConfig(false)}
         />
       )}
+
+      <QuestionEditor
+        questions={questions}
+        setQuestions={setQuestions}
+        showAiConfig={showAiConfig}
+        onShowAiConfig={() => setShowAiConfig(!showAiConfig)}
+      />
 
       {/* Actions */}
       <div className="flex items-center justify-between gap-4 pb-8 animate-fade-in">

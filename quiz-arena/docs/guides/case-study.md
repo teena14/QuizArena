@@ -2,13 +2,13 @@
 
 ## The Problem
 
-When looking at existing tools for classroom engagement, there is a distinct gap. Platforms like Mentimeter cost money, creating a barrier for educators on a budget, and they often lack proper "classroom support" where a cohort of students can enroll and stay connected. On the other hand, general platforms like Google Classroom offer extensive features but are a mixed bag for various tasks and lack a quick, 5-minute user experience (UX) specifically for rapid quiz deployment. The goal was to bridge this gap: create a tool with a dedicated classroom model and a frictionless, lightning-fast UX.
+When looking at existing tools for classroom engagement, there is a distinct gap. Platforms like Kahoot cost money, creating a barrier for educators on a budget, and platform like mentimeter often lack proper "classroom support" where a cohort of students can enroll and stay connected. On the other hand, general platforms like Google Classroom offer extensive features but are a mixed bag for various tasks and lack a quick, 5-minute user experience (UX) specifically for rapid quiz deployment. The goal was to bridge this gap: create a tool with a dedicated classroom model and a frictionless, lightning-fast UX.
 
 ## The Approach
 
 We built QuizArena to focus on simplicity and speed for both teachers and students:
 - **Frictionless Dashboard:** A teacher simply logs into their dashboard and can immediately start creating a quiz. 
-- **AI-Powered Generation:** To further speed up the process, teachers can generate quizzes using AI by simply providing document context.
+- **AI-Powered Generation:** To further speed up the process, teachers can generate quizzes using AI by simply providing document context or topic name.
 - **Classroom Model:** Each teacher gets their own dedicated "classroom." They share a single classroom code with their students. Once students enroll, they automatically receive updates and access to all current and future quizzes from that teacher, eliminating the need to share individual links for every single activity.
 
 ## The Result

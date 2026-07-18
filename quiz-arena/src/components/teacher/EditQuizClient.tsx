@@ -93,19 +93,19 @@ export function EditQuizClient({ quiz }: { quiz: Quiz & { questions: QuizQuestio
 
       <EditQuizForm form={form} setForm={setForm} />
 
-      <QuestionEditor
-        questions={questions}
-        setQuestions={setQuestions}
-        showAiConfig={showAiConfig}
-        onShowAiConfig={() => setShowAiConfig(!showAiConfig)}
-      />
-
       {showAiConfig && (
         <AiGeneratorConfig
           onGenerate={(newQuestions) => setQuestions((prev) => [...prev, ...newQuestions])}
           onClose={() => setShowAiConfig(false)}
         />
       )}
+
+      <QuestionEditor
+        questions={questions}
+        setQuestions={setQuestions}
+        showAiConfig={showAiConfig}
+        onShowAiConfig={() => setShowAiConfig(!showAiConfig)}
+      />
 
       {showDeleteConfirm && (
         <DeleteQuizModal
