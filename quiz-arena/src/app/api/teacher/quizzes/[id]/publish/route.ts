@@ -18,9 +18,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (count === 0) return NextResponse.json({ error: "Add at least one question before publishing" }, { status: 400 });
   }
 
-  const quiz = await prisma.quiz.update({
-    where: { id },
-    data: { isPublished: !existing.isPublished },
+  const newPublishedStatus = !existing.isPublished;
+
+  const quiz = await prisma.$transaction(async (tx) => {
+    if (!newPublishedStatus) {
+      await tx.quizAttempt.deleteMany({ where: { quizId: id } });
+    }
+    return tx.quiz.update({
+      where: { id },
+      data: { isPublished: newPublishedStatus },
+    });
   });
 
   return NextResponse.json({ quiz });

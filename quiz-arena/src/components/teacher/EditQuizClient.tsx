@@ -54,7 +54,6 @@ export function EditQuizClient({ quiz }: { quiz: Quiz & { questions: QuizQuestio
       });
       toast.success("Quiz updated!");
       router.push("/teacher/quizzes");
-      router.refresh();
     } catch (e: unknown) {
       toast.error((e as Error).message || "Something went wrong");
     } finally {

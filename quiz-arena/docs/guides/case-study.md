@@ -10,6 +10,7 @@ We built QuizArena to focus on simplicity and speed for both teachers and studen
 - **Frictionless Dashboard:** A teacher simply logs into their dashboard and can immediately start creating a quiz. 
 - **AI-Powered Generation:** To further speed up the process, teachers can generate quizzes using AI by simply providing document context or topic name.
 - **Classroom Model:** Each teacher gets their own dedicated "classroom." They share a single classroom code with their students. Once students enroll, they automatically receive updates and access to all current and future quizzes from that teacher, eliminating the need to share individual links for every single activity.
+- **Unpublishing Resets:** If a teacher decides to unpublish a quiz, all previous student attempts are securely cleared so that when it is republished, it behaves as a fresh quiz.
 
 ## The Result
 

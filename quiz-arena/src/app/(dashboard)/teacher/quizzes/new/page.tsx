@@ -58,7 +58,6 @@ export default function NewQuizPage() {
       });
       toast.success(publish ? "Quiz published!" : "Quiz saved as draft");
       router.push("/teacher/quizzes");
-      router.refresh();
     } catch (e: unknown) {
       toast.error((e as Error).message || "Something went wrong");
     } finally {

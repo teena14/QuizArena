@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { updateQuizSchema } from "@/lib/validations";
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 
 export async function createQuizAction(data: z.infer<typeof updateQuizSchema>) {
   const session = await auth();
@@ -37,6 +38,7 @@ export async function createQuizAction(data: z.infer<typeof updateQuizSchema>) {
     },
   });
 
+  revalidatePath("/teacher/quizzes");
   return { success: true, quizId: quiz.id };
 }
 
@@ -55,6 +57,10 @@ export async function updateQuizAction(id: string, data: z.infer<typeof updateQu
 
   // Replace questions atomically
   await prisma.$transaction(async (tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0]) => {
+    if (existing.isPublished && isPublished === false) {
+      await tx.quizAttempt.deleteMany({ where: { quizId: id } });
+    }
+    
     await tx.question.deleteMany({ where: { quizId: id } });
     return tx.quiz.update({
       where: { id },
@@ -75,6 +81,7 @@ export async function updateQuizAction(id: string, data: z.infer<typeof updateQu
     });
   });
 
+  revalidatePath("/teacher/quizzes");
   return { success: true };
 }
 
@@ -101,5 +108,6 @@ export async function deleteQuizAction(id: string) {
     }
   });
 
+  revalidatePath("/teacher/quizzes");
   return { success: true };
 }
